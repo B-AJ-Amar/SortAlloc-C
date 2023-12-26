@@ -14,16 +14,25 @@ This C language project focuses on analyzing and comparing various file allocati
      git clone https://github.com/B-AJ-Amar/SortAlloc-C.git
     ```
 
-2. Compile the program:
+2. create makefile :
+    - for linux || mac :
+      ```bash
+      Scripts/Setup-Linux.sh
+      ```
+    - for windows
+      ```bash
+        Scripts\Setup-Windows.bat
+      ```
+3. make :
+    ```bash
+      make
+      ```
+      **Note:** if you get an error whene you `make`, go to `./App.make` and add to it `CC=gcc`
+
+4. Run the program:
 
     ```bash
-    gcc main.c lib/str.c lib/csv.c -o app
-    ```
-
-3. Run the program:
-
-    ```bash
-    ./app
+    ./bin/debug/App.exe
     ```
 ## Usage
 - Follow the instructions displayed on the console or terminal interface.

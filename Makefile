@@ -9,29 +9,29 @@ ifndef verbose
 endif
 
 ifeq ($(config),debug)
-  TP_config = debug
+  App_config = debug
 
 else ifeq ($(config),release)
-  TP_config = release
+  App_config = release
 
 else
   $(error "invalid configuration $(config)")
 endif
 
-PROJECTS := TP
+PROJECTS := App
 
 .PHONY: all clean help $(PROJECTS) 
 
 all: $(PROJECTS)
 
-TP:
-ifneq (,$(TP_config))
-	@echo "==== Building TP ($(TP_config)) ===="
-	@${MAKE} --no-print-directory -C . -f TP.make config=$(TP_config)
+App:
+ifneq (,$(App_config))
+	@echo "==== Building App ($(App_config)) ===="
+	@${MAKE} --no-print-directory -C . -f App.make config=$(App_config)
 endif
 
 clean:
-	@${MAKE} --no-print-directory -C . -f TP.make clean
+	@${MAKE} --no-print-directory -C . -f App.make clean
 
 help:
 	@echo "Usage: make [config=name] [target]"
@@ -43,6 +43,6 @@ help:
 	@echo "TARGETS:"
 	@echo "   all (default)"
 	@echo "   clean"
-	@echo "   TP"
+	@echo "   App"
 	@echo ""
 	@echo "For more information, see https://github.com/premake/premake-core/wiki"
