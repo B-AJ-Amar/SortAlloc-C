@@ -1,7 +1,7 @@
-workspace "TP"
+workspace "App"
     configurations { "Debug", "Release"  }
     -- you need a dist configurations if you did a GUI 
-project "TP"
+project "App"
     kind "ConsoleApp"
     language "C"
     targetdir "bin/%{cfg.buildcfg}"

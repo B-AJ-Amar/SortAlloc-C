@@ -6,7 +6,8 @@
 # Build directories
 build/
 bin/
-
+*.make
+Makefile
 # Dependency files
 *.d
 
@@ -17,3 +18,5 @@ bin/
 *.TODO
 *.TODO
 test*
+Makefile
+*.make
