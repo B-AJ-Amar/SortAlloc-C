@@ -70,43 +70,36 @@ void printRecordArray(RecordArray* array) {
 ? we will use the first method because it's faster and it's not a big deal to waste some space
 */
 
-
 void CSVToArrayRecords(FILE* file, RecordArray* array) {
-    // FILE* file = fopen(filename, "r");
     if (file == NULL) {
         perror("Error opening file");
         exit(EXIT_FAILURE);
     }
-    // Read records from the file
-    char line[256];
-    while (fgets(line, sizeof(line), file) != NULL) {
-        Record record;
 
-        // Tokenize the line using strtok
-        char* token = strtok(line, ",");
-        if (token == NULL) {
+    int linesNum = getLinesNum(file);
+
+    array->length = linesNum;
+    array->data = (Record*)malloc(linesNum * sizeof(Record));
+
+    char line[MAX_LINE_SIZE];
+    for (int i = 0; i < linesNum; i++) {
+        if (fgets(line, sizeof(line), file) == NULL) {
             break;  // End of file or error
         }
 
-        // Assuming the CSV format is: id,firstName,lastName,group
-        record.id = atoi(token);
+        Record* record = &array->data[i];
+
+        char* token = strtok(line, ",");
+        record->id = atoi(token);
 
         token = strtok(NULL, ",");
-        record.firstName = strCreate(token);
+        record->firstName = strCreate(token);
 
         token = strtok(NULL, ",");
-        record.lastName = strCreate(token);
+        record->lastName = strCreate(token);
 
         token = strtok(NULL, ",");
-        record.group = atoi(token);
-
-        // Resize the array
-        array->data = realloc(array->data, (array->length + 1) * sizeof(Record));
-
-        // Store the record in the array
-        array->data[array->length] = record;
-        array->length++;
+        record->group = atoi(token);
     }
 
-    // fclose(file);
 }

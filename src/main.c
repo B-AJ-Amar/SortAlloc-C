@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 // #include "lib/str.h" // my srting library 
-#include "csv.h" // my csv library
+#include "sort.h" // my csv library
 
 
 // ? Macros ========================================================================================
@@ -64,6 +64,9 @@ int main() {
         newArray->length = 0;
         newArray->data = NULL;
         CSVToArrayRecords(fp, newArray);
+        printRecordArray(newArray);
+        printf("> Sorting csv in Array ===============================\n");
+        ArraySort(newArray, 0, 4);
         printRecordArray(newArray);
         // RecordArray csv = ArrStoreCSV(fp);
         // PrintRecordArray(*csv);
