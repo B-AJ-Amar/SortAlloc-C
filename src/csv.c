@@ -14,10 +14,14 @@
 
 int getFieldsNum(FILE *fp){
     int fieldsNum = 0;
+    printf("getFieldsNum\n");
     char *line = (char *)malloc(MAX_LINE_SIZE * sizeof(char));
+    fgets(line, MAX_LINE_SIZE, fp);
     char *token = strtok(line, ",");
+
     while (token != NULL) {
         fieldsNum++;
+        printf("token: %s , fields %d \n", token,fieldsNum);
         token = strtok(NULL, ",");
     }
     rewind(fp); // return the pointer to the begining of the file
@@ -38,13 +42,17 @@ int getLinesNum(FILE *fp){
 
 // create recorde 
 
-Record RecordCreate(int FieldsNum){
-    Record record;
-    record.fields = strArrayCreate(FieldsNum-1); // FieldsNum = id + fields
+Record* RecordCreate(int FieldsNum){
+    strArray* fields;
+    *fields = strArrayCreate(FieldsNum-1);
+    Record* record = (Record*)malloc(sizeof(Record));  
+    record->fields = fields;
+    printf("> creating Rec =========================\n");
+    PrintRecord(*record);
     return record;
 }
 
-void SetRecord(Record *record, int id, strArray fields){
+void SetRecord(Record *record, int id, strArray* fields){
     record->id = id;
     record->fields = fields;
 }
@@ -55,58 +63,69 @@ void PrintRecord(Record record){
     printf("{\n");
     printf("    id: %d\n", record.id);
     printf("    fields: ");
-    strArrayPrint(record.fields);
+    strArrayPrint(*(record.fields));
     printf("\n}");
 }
 
 // * RecordArray --------------------------------------------------------------
 
-RecordArray CreateRecordArray(int length, int fieldsNum){
-    RecordArray arr;
-    arr.length = length;
-    arr.data = malloc(sizeof(Record) * length);
-    for (int i = 0; i < length; i++) {
-        arr.data[i] = RecordCreate(fieldsNum-1);
-    }
+RecordArray *RecordArrayCreate(int length,int fieldsNum){
+    RecordArray* arr = (RecordArray*)malloc(sizeof(RecordArray));
+    arr->length = length;
+    arr->data = RecordCreate(fieldsNum);
     return arr;
 }
 
 void PrintRecordArray(RecordArray arr){
-    printf("[\n");
+    printf("[");
     for (int i = 0; i < arr.length; i++) {
         PrintRecord(arr.data[i]);
         printf(",\n");
     }
-    printf("]\n");
+    printf("]");
 }
 // ? ========================================================================
 // ? CSV store data
 // ? ========================================================================
 
-
-RecordArray ArrStoreCSV(FILE *fp){
+// ! akhir 7aja wsaltlha hiya masal7ach nkhdm bla Record , lavm ndir record w n7otto f RecordArray
+RecordArray* ArrStoreCSV(FILE *fp){
+    printf("@ArrStoreCSV######################################\n");
     int fieldsNum = getFieldsNum(fp);
     int linesNum = getLinesNum(fp);
-    RecordArray arr = CreateRecordArray(linesNum, fieldsNum);
-    arr.length = linesNum;
-
-    char *line = (char *)malloc(MAX_LINE_SIZE * sizeof(char));
+    int tempID = 0;
+    RecordArray* arr = RecordArrayCreate(linesNum, fieldsNum);
+    arr->length = linesNum;
+    arr->data = RecordCreate(fieldsNum);
+    char *line = NULL;
     char *token = strtok(line, ",");
     int recLine=0, recField=0;
+
     while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
-        // get the first token as int (the id)
-        int id = atoi(strtok(line, ","));
-        arr.data[recLine].id = id;
+        recField = 0;
+        strArray tempArray = strArrayCreate(fieldsNum-1);
+        tempID = atoi(strtok(line, ","));
+        arr->data[recLine].id = tempID;
         token = strtok(line, ",");
         while (token != NULL) {
-            strArraySet(&arr.data[recLine].fields, recField, token);
+
+            printf("token: %s , fields %d \n", token,recField);
+            // strArraySet(&arr.data[recLine].fields, recField, token);
+            strArraySet(&tempArray, recField, token);
             recField++;
             token = strtok(NULL, ",");
         }
+        printf("> end record %d :\n", recLine);
+        strArrayCopy(arr->data[recLine].fields, tempArray);
+        printf("result record :\n");
+        PrintRecord(arr->data[recLine]);
         recLine++;
     }
+    PrintRecordArray(*arr);
+    printf("ArrStoreCSV passed######################################\n");
     return arr;
 }
+
 
 
 // RecordLinkedList StoreCSVList(FILE *fl){

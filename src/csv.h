@@ -10,7 +10,7 @@
 // ? =============================================================================
 typedef struct Record {
     int id;
-    strArray fields; 
+    strArray* fields; 
 } Record;
 
 typedef struct RecordArray {
@@ -45,22 +45,21 @@ int getFieldsNum(FILE *fp);
 
 int getLinesNum(FILE *fp);
 
-Record RecordCreate(int FieldsNum);
+Record* RecordCreate(int FieldsNum);
 
-void SetRecord(Record *record, int id, strArray fields);
+void SetRecord(Record *record, int id, strArray* fields);
 
 void PrintRecord(Record record);
 
 // * RecordArray --------------------------------------------------------------
 
-RecordArray RecordArrayCreate(int length);
+RecordArray *RecordArrayCreate(int length,int fieldsNum);
 
 void PrintRecordArray(RecordArray arr);
 
 // void RecordArraySet(RecordArray* s, int index, Record record);
 
 
-
-RecordArray ArrStoreCSV(FILE *fp);
+RecordArray* ArrStoreCSV(FILE *fp);
 
 #endif

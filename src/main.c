@@ -30,6 +30,7 @@ int main() {
         clearScreen;
         printf("Enter a path: ");
         scanf("%s", path);
+        printf("path: %s\n", path);
         fp = fopen(path, "r");
     } while (fp == NULL);
     // *Part 2 : get the number of the fields of the CSV file------------------------------------
@@ -53,6 +54,22 @@ int main() {
         scanf("%d", &choice);
         fflush(stdin);
     } while (choice < 1 || choice > 3);
+    if (choice == 1)
+    {
+        printf("> Storing csv in Array ===============================\n");
+        RecordArray* csv = ArrStoreCSV(fp);
+        PrintRecordArray(*csv);
+
+
+    }
+    else if (choice == 2)
+    {
+        printf("Linked List\n");
+    }
+    else
+    {
+        printf("binary tree\n");
+    }
     
     printf("Fields number: %d\n", fieldsNum);
     // using strtoc

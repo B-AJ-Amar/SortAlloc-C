@@ -41,6 +41,8 @@ strArray strArrayCreate(int length);
 
 void strArraySet(strArray* s, int index, const char* strIn); 
 
+void strArrayCopy(strArray* dest, strArray src);
+
 void strArrayPrint(strArray s);
 str strArrayGet(strArray s, int index);
 

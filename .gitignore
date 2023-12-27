@@ -20,3 +20,4 @@ Makefile
 test*
 Makefile
 *.make
+*.csv
