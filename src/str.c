@@ -3,7 +3,8 @@ MIT License
 
 Copyright (c) 2023 Bouakaz Amar Abdeldjalil
 
-github repository : https://github.com/B-AJ-Amar/StrKit.git
+for the last version of this file visit :
+    github repository : https://github.com/B-AJ-Amar/StrKit.git
 */
 
 #include "str.h"
@@ -71,6 +72,9 @@ void strFree(str* s) {
     free(s->data);
 }
 
+void strPrint(str s) {
+    printf("%s", s.data);
+}
 
 // ? ====================================================================================
 // ? Array of strings

@@ -10,7 +10,9 @@
 // ? =============================================================================
 typedef struct Record {
     int id;
-    strArray* fields; 
+    str firstName;
+    str lastName;
+    int group;
 } Record;
 
 typedef struct RecordArray {
@@ -18,22 +20,22 @@ typedef struct RecordArray {
     Record* data;
 } RecordArray;
 
-typedef struct RecordNode {
-    Record data;
-    struct RecordNode* next;
-} RecordNode;
+// typedef struct RecordNode {
+//     Record data;
+//     struct RecordNode* next;
+// } RecordNode;
 
-typedef struct RecordLinkedList {
-    RecordNode* head;
-    RecordNode* tail;
-    int length;
-} RecordLinkedList;
+// typedef struct RecordLinkedList {
+//     RecordNode* head;
+//     RecordNode* tail;
+//     int length;
+// } RecordLinkedList;
 
-typedef struct RecordBinaryTree {
-    Record data;
-    struct RecordBinaryTree* left;
-    struct RecordBinaryTree* right;
-} RecordBinaryTree;
+// typedef struct RecordBinaryTree {
+//     Record data;
+//     struct RecordBinaryTree* left;
+//     struct RecordBinaryTree* right;
+// } RecordBinaryTree;
 
 
 
@@ -41,25 +43,29 @@ typedef struct RecordBinaryTree {
 
 
 // * Record --------------------------------------------------------------------
-int getFieldsNum(FILE *fp);
 
 int getLinesNum(FILE *fp);
+/*
+// Record RecordInit()
 
-Record* RecordCreate(int FieldsNum);
+// void SetRecord(Record *record, int id, str firstName, str lastName, int group);
 
-void SetRecord(Record *record, int id, strArray* fields);
+// Record getCSVLine(FILE *fp)
 
-void PrintRecord(Record record);
-
+// void PrintRecord(Record record);
+*/
 // * RecordArray --------------------------------------------------------------
 
-RecordArray *RecordArrayCreate(int length,int fieldsNum);
+// RecordArray* createRecordArray() 
 
-void PrintRecordArray(RecordArray arr);
+// void PrintRecordArray(RecordArray arr)
 
 // void RecordArraySet(RecordArray* s, int index, Record record);
 
 
-RecordArray* ArrStoreCSV(FILE *fp);
-
+// ? storing CSV data =========================================================
+// RecordArray* ArrStoreCSV(FILE *fp);
+void CSVToArrayRecords(FILE* file, RecordArray* array);
+// void CSVToArrayRecords(const char* filename, RecordArray* array);
+void printRecordArray(RecordArray* array);
 #endif

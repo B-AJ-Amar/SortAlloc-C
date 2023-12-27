@@ -12,21 +12,6 @@
 // ? Record data types manupulation
 // ? ========================================================================
 
-int getFieldsNum(FILE *fp){
-    int fieldsNum = 0;
-    printf("getFieldsNum\n");
-    char *line = (char *)malloc(MAX_LINE_SIZE * sizeof(char));
-    fgets(line, MAX_LINE_SIZE, fp);
-    char *token = strtok(line, ",");
-
-    while (token != NULL) {
-        fieldsNum++;
-        printf("token: %s , fields %d \n", token,fieldsNum);
-        token = strtok(NULL, ",");
-    }
-    rewind(fp); // return the pointer to the begining of the file
-    return fieldsNum;
-}
 
 int getLinesNum(FILE *fp){
     int linesNum = 0;
@@ -40,125 +25,88 @@ int getLinesNum(FILE *fp){
 
 
 
-// create recorde 
 
-Record* RecordCreate(int FieldsNum){
-    strArray* fields;
-    *fields = strArrayCreate(FieldsNum-1);
-    Record* record = (Record*)malloc(sizeof(Record));  
-    record->fields = fields;
-    printf("> creating Rec =========================\n");
-    PrintRecord(*record);
-    return record;
+
+
+// ? recorde array ========================================================================
+// ! there is some error i dont know why 
+// RecordArray* createRecordArray() {
+//     RecordArray* newArray = (RecordArray*)malloc(sizeof(RecordArray));
+//     newArray->length = 0;
+//     newArray->data = NULL;
+//     return newArray;
+// }
+
+
+// Function to initialize a new RecordArray structure
+RecordArray* createRecordArray() {
+    RecordArray* newArray = (RecordArray*)malloc(sizeof(RecordArray));
+    newArray->length = 0;
+    newArray->data = NULL;
+    return newArray;
 }
 
-void SetRecord(Record *record, int id, strArray* fields){
-    record->id = id;
-    record->fields = fields;
-}
-
-
-
-void PrintRecord(Record record){
-    printf("{\n");
-    printf("    id: %d\n", record.id);
-    printf("    fields: ");
-    strArrayPrint(*(record.fields));
-    printf("\n}");
-}
-
-// * RecordArray --------------------------------------------------------------
-
-RecordArray *RecordArrayCreate(int length,int fieldsNum){
-    RecordArray* arr = (RecordArray*)malloc(sizeof(RecordArray));
-    arr->length = length;
-    arr->data = RecordCreate(fieldsNum);
-    return arr;
-}
-
-void PrintRecordArray(RecordArray arr){
-    printf("[");
-    for (int i = 0; i < arr.length; i++) {
-        PrintRecord(arr.data[i]);
-        printf(",\n");
+void printRecordArray(RecordArray* array) {
+    for (int i = 0; i < array->length; i++) {
+        printf("%d, %s, %s, %d\n", array->data[i].id, array->data[i].firstName.data, array->data[i].lastName.data, array->data[i].group);
     }
-    printf("]");
 }
+
+
+
 // ? ========================================================================
 // ? CSV store data
 // ? ========================================================================
 
-// ! akhir 7aja wsaltlha hiya masal7ach nkhdm bla Record , lavm ndir record w n7otto f RecordArray
-RecordArray* ArrStoreCSV(FILE *fp){
-    printf("@ArrStoreCSV######################################\n");
-    int fieldsNum = getFieldsNum(fp);
-    int linesNum = getLinesNum(fp);
-    int tempID = 0;
-    RecordArray* arr = RecordArrayCreate(linesNum, fieldsNum);
-    arr->length = linesNum;
-    arr->data = RecordCreate(fieldsNum);
-    char *line = NULL;
-    char *token = strtok(line, ",");
-    int recLine=0, recField=0;
 
-    while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
-        recField = 0;
-        strArray tempArray = strArrayCreate(fieldsNum-1);
-        tempID = atoi(strtok(line, ","));
-        arr->data[recLine].id = tempID;
-        token = strtok(line, ",");
-        while (token != NULL) {
+//* I- Array ================================================================
+/*
+? there is to ways to store the csv file in array:
+    ? 1- count the number of lines in the file and create an array of records with the same length:
+        - the time comlexity is O(n){create the array}+O(n){count the lines} = O(2n) and the space complexity is O(n)
+    ? 2- realoc the array each time we read a line from the file:
+        - the time comlexity is O(n^2) and the space complexity is O(n)
 
-            printf("token: %s , fields %d \n", token,recField);
-            // strArraySet(&arr.data[recLine].fields, recField, token);
-            strArraySet(&tempArray, recField, token);
-            recField++;
-            token = strtok(NULL, ",");
-        }
-        printf("> end record %d :\n", recLine);
-        strArrayCopy(arr->data[recLine].fields, tempArray);
-        printf("result record :\n");
-        PrintRecord(arr->data[recLine]);
-        recLine++;
+? we will use the first method because it's faster and it's not a big deal to waste some space
+*/
+
+
+void CSVToArrayRecords(FILE* file, RecordArray* array) {
+    // FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
     }
-    PrintRecordArray(*arr);
-    printf("ArrStoreCSV passed######################################\n");
-    return arr;
+    // Read records from the file
+    char line[256];
+    while (fgets(line, sizeof(line), file) != NULL) {
+        Record record;
+
+        // Tokenize the line using strtok
+        char* token = strtok(line, ",");
+        if (token == NULL) {
+            break;  // End of file or error
+        }
+
+        // Assuming the CSV format is: id,firstName,lastName,group
+        record.id = atoi(token);
+
+        token = strtok(NULL, ",");
+        record.firstName = strCreate(token);
+
+        token = strtok(NULL, ",");
+        record.lastName = strCreate(token);
+
+        token = strtok(NULL, ",");
+        record.group = atoi(token);
+
+        // Resize the array
+        array->data = realloc(array->data, (array->length + 1) * sizeof(Record));
+
+        // Store the record in the array
+        array->data[array->length] = record;
+        array->length++;
+    }
+
+    // fclose(file);
 }
-
-
-
-// RecordLinkedList StoreCSVList(FILE *fl){
-//     RecordLinkedList list;
-//     list.head = NULL;
-//     list.tail = NULL;
-//     list.length = 0;
-//     char *line = (char *)malloc(MAX_LINE_SIZE * sizeof(char));
-//     char *token = strtok(line, ",");
-//     int i = 0;
-//     while (fgets(line, MAX_LINE_SIZE, fp) != NULL) {
-//         RecordNode *node = (RecordNode *)malloc(sizeof(RecordNode));
-//         node->data.id = i;
-//         node->data.fields = strArrayCreate(fieldsNum);
-//         token = strtok(line, ",");
-//         while (token != NULL) {
-//             strArrayPush(&node->data.fields, token);
-//             token = strtok(NULL, ",");
-//         }
-//         node->next = NULL;
-//         if (list.head == NULL) {
-//             list.head = node;
-//             list.tail = node;
-//         } else {
-//             list.tail->next = node;
-//             list.tail = node;
-//         }
-//         list.length++;
-//         i++;
-//     }
-//     return list;
-// }
-
-
-
-// ! el mechkl fi strArray lazm nl9alha 7all
