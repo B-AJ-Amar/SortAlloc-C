@@ -77,24 +77,24 @@ int main() {
             printf("donn\n");
         }
 
-        do
-        {
             printf("choose the sort algorithm: \n");
             printf("    1- Bubble Sort\n");
             printf("    2- selection Sort\n");
             printf("    3- insertion Sort\n");
             printf("    4- Quick Sort\n");
             printf("    5- Merge Sort\n");
+        do
+        {
             printf("> ");
             scanf("%d", &sortAlgorithm);
             fflush(stdin);
         } while (sortAlgorithm<1 || sortAlgorithm > 5);
         
-        do
-        {
             printf("choose the sort direction: \n");
             printf("    1- Ascending\n");
             printf("    2- Descending\n");
+        do
+        {
             printf("> ");
             scanf("%d",&sortDirection);
             fflush(stdin);
@@ -119,6 +119,9 @@ int main() {
     }
     else if (choice == 2)
     {
+        RecordLinkedList* newLList = createRecordLinkedList();
+        CSVToLinkedList(fp, newLList);
+        printLinkedList(newLList);
         printf("Linked List\n");
     }
     else

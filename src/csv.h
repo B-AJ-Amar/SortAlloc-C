@@ -20,16 +20,16 @@ typedef struct RecordArray {
     Record* data;
 } RecordArray;
 
-// typedef struct RecordNode {
-//     Record data;
-//     struct RecordNode* next;
-// } RecordNode;
+typedef struct RecordNode {
+    Record data;
+    struct RecordNode* next;
+} RecordNode;
 
-// typedef struct RecordLinkedList {
-//     RecordNode* head;
-//     RecordNode* tail;
-//     int length;
-// } RecordLinkedList;
+typedef struct RecordLinkedList {
+    RecordNode* head;
+    RecordNode* tail;
+    int length;
+} RecordLinkedList;
 
 typedef struct RecordBinaryTree {
     Record data;
@@ -64,7 +64,15 @@ void printRecordArray(RecordArray* array);
 
 
 // * RecordLinkedList ----------------------------------------------------------
+RecordNode* createRecordNode(const Record* record);
 
+RecordLinkedList* createRecordLinkedList();
+
+void insertRecordLinkedList(RecordLinkedList* list, const Record* record);
+
+void printLinkedList(const RecordLinkedList* list);
+
+void freeLinkedList(RecordLinkedList* list);
 // * RecordBinaryTree ----------------------------------------------------------
 
 RecordBinaryTree* createTreeNode(const Record* record);
@@ -100,5 +108,7 @@ RecordArray doubleHashArrayToTable(RecordArray* array);
 void CSVToArrayRecords(FILE* file, RecordArray* array);
 // void CSVToArrayRecords(const char* filename, RecordArray* array);
 void CSVToBinaryTree(FILE* file, RecordBinaryTree** root); 
+
+void CSVToLinkedList(FILE* file, RecordLinkedList* list);
 
 #endif
