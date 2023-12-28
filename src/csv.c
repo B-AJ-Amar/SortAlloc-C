@@ -38,7 +38,6 @@ int getLinesNum(FILE *fp){
 // }
 
 
-// Function to initialize a new RecordArray structure
 RecordArray* createRecordArray() {
     RecordArray* newArray = (RecordArray*)malloc(sizeof(RecordArray));
     newArray->length = 0;
@@ -65,7 +64,6 @@ void printRecordArray(RecordArray* array) {
 
 // ? Binary tree ========================================================================
 
-// Function to create a new RecordBinaryTree node
 RecordBinaryTree* createTreeNode(const Record* record) {
     RecordBinaryTree* newNode = (RecordBinaryTree*)malloc(sizeof(RecordBinaryTree));
     newNode->data = *record;
@@ -74,13 +72,11 @@ RecordBinaryTree* createTreeNode(const Record* record) {
     return newNode;
 }
 
-// Function to insert a record into the binary search tree
 RecordBinaryTree* insertRecordBinaryTree(RecordBinaryTree* root, const Record* record) {
     if (root == NULL) {
         return createTreeNode(record);
     }
 
-    // Compare IDs to decide whether to insert left or right
     if (record->id < root->data.id) {
         root->left = insertRecordBinaryTree(root->left, record);
     } else if (record->id > root->data.id) {
@@ -90,7 +86,6 @@ RecordBinaryTree* insertRecordBinaryTree(RecordBinaryTree* root, const Record* r
     return root;
 }
 
-// print records in increasing order of their IDs
 void printBinaryTreeInc(RecordBinaryTree* root) {
     if (root != NULL) {
         printBinaryTreeInc(root->left);
@@ -141,8 +136,86 @@ void freeBinaryTree(RecordBinaryTree* root) {
 }
 
 
-// ? hash table ========================================================================
+// ? Linked Lists ========================================================================
 
+
+RecordNode* createRecordNode(const Record* record) {
+    RecordNode* newNode = (RecordNode*)malloc(sizeof(RecordNode));
+    newNode->data = *record;
+    newNode->next = NULL;
+    return newNode;
+}
+
+RecordLinkedList* createRecordLinkedList() {
+    RecordLinkedList* newList = (RecordLinkedList*)malloc(sizeof(RecordLinkedList));
+    newList->head = NULL;
+    newList->tail = NULL;
+    newList->length = 0;
+    return newList;
+}
+
+void insertRecordLinkedList(RecordLinkedList* list, const Record* record) {
+    RecordNode* newNode = createRecordNode(record);
+
+    if (list->head == NULL) {
+        list->head = newNode;
+        list->tail = newNode;
+    } else {
+        list->tail->next = newNode;
+        list->tail = newNode;
+    }
+
+    list->length++;
+}
+
+
+void printLinkedList(const RecordLinkedList* list) {
+    RecordNode* current = list->head;
+
+    printf("+---------+------------------------------+-------------------------------------+\n");
+    printf("|id       |first name                    |last name                     |group |\n");
+    printf("+---------+------------------------------+-------------------------------------+\n");
+
+    while (current != NULL) {
+        printf("|%d ", current->data.id);
+        printf("|%s", current->data.firstName.data);
+        for (int j = 0; j < 30 - current->data.firstName.length; j++) printf(" ");
+        printf("|%s", current->data.lastName.data);
+        for (int j = 0; j < 30 - current->data.lastName.length; j++) printf(" ");
+        printf("|%d     |\n", current->data.group);
+
+        current = current->next;
+    }
+
+    printf("+---------+------------------------------+-------------------------------------+\n");
+}
+
+void freeLinkedList(RecordLinkedList* list) {
+    RecordNode* current = list->head;
+    RecordNode* next;
+
+    while (current != NULL) {
+        next = current->next;
+        strFree(&current->data.firstName);
+        strFree(&current->data.lastName);
+        free(current);
+        current = next;
+    }
+
+    free(list);
+}
+
+// ? ========================================================================
+// ? hash table 
+// ? =========================================================================
+int hash(int key, int size) {
+    return key % size;
+}
+
+int hash2(int key) {
+    return 13 - (key % 13);
+}
+// @ Arrays  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // the general hash function
 RecordArray HashTable(RecordArray* array,int algorithm){
     if (algorithm==0) return linearHashArrayToTable(array);
@@ -150,21 +223,15 @@ RecordArray HashTable(RecordArray* array,int algorithm){
 }
 
 // * Liniar Hashing ----------------------------------------------------------
-int hash(int key, int size) {
-    return key % size;
-}
 
-// Function to insert a record into the hash table using linear probing
 void insertRecordLinear(RecordArray* table,Record* record) {
     int key = record->id;
     int index = hash(key, table->length);
 
-    // Linear probing to handle collisions
     while (table->data[index].id != -1) {
         index = (index + 1) % table->length;
     }
 
-    // Insert the record at the found index
     table->data[index] = *record;
 }
 
@@ -172,35 +239,27 @@ RecordArray linearHashArrayToTable(RecordArray* array) {
     RecordArray newTable = {array->length, (Record*)malloc(array->length * sizeof(Record))};
 
     for (int i = 0; i < array->length; i++) {
-        // Initialize the new table with empty records
         newTable.data[i].id = -1;
     }
 
     for (int i = 0; i < array->length; i++) {
-        insertRecordLinear(&newTable, &array->data[i]); // Using a step size of 1 for linear probing
+        insertRecordLinear(&newTable, &array->data[i]); 
     }
 
     return newTable;
 }
 // * Double Hashing ----------------------------------------------------------
 
-// Second hash function for double hashing (using prime number)
-int hash2(int key) {
-    return 13 - (key % 13);
-}
 
-// Function to insert a record into the hash table using double hashing
 void insertRecordDouble(RecordArray* table,Record* record) {
     int key = record->id;
     int index = hash(key, table->length);
     int stepSize = hash2(key);
 
-    // Double hashing to handle collisions
     while (table->data[index].id != -1) {
         index = (index + stepSize ) % table->length;
     }
 
-    // Insert the record at the found index
     table->data[index] = *record;
 }
 
@@ -208,8 +267,7 @@ RecordArray doubleHashArrayToTable(RecordArray* array) {
     RecordArray newTable = {array->length, (Record*)malloc(array->length * sizeof(Record))};
 
     for (int i = 0; i < array->length; i++) {
-        // Initialize the new table with empty records
-        newTable.data[i].id = -1;
+        newTable.data[i].id = -1;  // -1 ==> empty
     }
 
     for (int i = 0; i < array->length; i++) {
@@ -218,6 +276,39 @@ RecordArray doubleHashArrayToTable(RecordArray* array) {
 
     return newTable;
 }
+
+
+// @ Linked Lists +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+RecordArray HashTableLL(RecordLinkedList* array,int algorithm){
+    if (algorithm==0) return linearHashLinkedListToTable(array);
+    // return doubleHashArrayToTable(array);
+    return linearHashLinkedListToTable(array);
+}
+// * Liniar Hashing ----------------------------------------------------------
+
+
+RecordArray linearHashLinkedListToTable(RecordLinkedList* list) {
+    int tableSize = list->length;
+    RecordArray newTable = {tableSize, malloc(tableSize * sizeof(Record))};
+
+    for (int i = 0; i < tableSize; i++) {
+        newTable.data[i].id = -1; // -1 ==> empty
+    }
+
+    // for (int i = 0; i < tableSize; i++) {
+        RecordNode* current = list->head;
+        do{
+            insertRecordLinear(&newTable, &current->data);
+            current = current->next;
+        }
+        while (current != NULL) ;
+    // }
+
+    return newTable;
+}
+
+
 
 // ? ========================================================================
 // ? CSV store data
@@ -236,10 +327,6 @@ RecordArray doubleHashArrayToTable(RecordArray* array) {
 */
 
 void CSVToArrayRecords(FILE* file, RecordArray* array) {
-    if (file == NULL) {
-        perror("Error opening file");
-        exit(EXIT_FAILURE);
-    }
 
     int linesNum = getLinesNum(file);
 
@@ -249,7 +336,7 @@ void CSVToArrayRecords(FILE* file, RecordArray* array) {
     char line[MAX_LINE_SIZE];
     for (int i = 0; i < linesNum; i++) {
         if (fgets(line, sizeof(line), file) == NULL) {
-            break;  // End of file or error
+            break;  
         }
 
         Record* record = &array->data[i];
@@ -272,10 +359,6 @@ void CSVToArrayRecords(FILE* file, RecordArray* array) {
 
 //* II- BinaryTree ================================================================
 void CSVToBinaryTree(FILE* file, RecordBinaryTree** root) {
-    if (file == NULL) {
-        perror("Error opening file");
-        exit(EXIT_FAILURE);
-    }
 
     char line[MAX_LINE_SIZE];
    
@@ -299,5 +382,31 @@ void CSVToBinaryTree(FILE* file, RecordBinaryTree** root) {
     }
 
 }
+
+// * III- Linked List ================================================================
+
+void CSVToLinkedList(FILE* file, RecordLinkedList* list) {
+   
+    char line[MAX_LINE_SIZE];
+
+    while (fgets(line, sizeof line, file) != NULL) {
+        Record* record = (Record*)malloc(sizeof(Record));
+
+        char* token = strtok(line, ",");
+        record->id = atoi(token);
+
+        token = strtok(NULL, ",");
+        record->firstName = strCreate(token);
+
+        token = strtok(NULL, ",");
+        record->lastName = strCreate(token);
+
+        token = strtok(NULL, ",");
+        record->group = atoi(token);
+
+        insertRecordLinkedList(list, record);
+    }
+}
+
 
 

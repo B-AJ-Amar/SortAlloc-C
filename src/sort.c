@@ -3,6 +3,9 @@
 #include <string.h>
 #include "sort.h" // my sort library
 
+
+// ! i didn't make sort algorithms for binary tree because its already sorted
+
 // ? =============================================================================
 // ? Array
 // ? =============================================================================
@@ -278,3 +281,10 @@ void ArrayMergeSort(RecordArray* array, int left, int right, int direction) {
         DMerge(array, left, middle, right);
     }
 }
+// ? =============================================================================
+// ? Linked List
+// ? =============================================================================
+
+
+
+
