@@ -81,6 +81,9 @@ int main() {
     }
     else
     {
+        RecordBinaryTree* root = NULL;
+        CSVToBinaryTree(fp, &root);
+        printBinaryTree(root, 0 );
         printf("binary tree\n");
     }
     
