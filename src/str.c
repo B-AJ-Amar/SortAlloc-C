@@ -1,3 +1,12 @@
+/*
+MIT License
+
+Copyright (c) 2023 Bouakaz Amar Abdeldjalil
+
+for the last version of this file visit :
+    github repository : https://github.com/B-AJ-Amar/StrKit.git
+*/
+
 #include "str.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -63,6 +72,9 @@ void strFree(str* s) {
     free(s->data);
 }
 
+void strPrint(str s) {
+    printf("%s", s.data);
+}
 
 // ? ====================================================================================
 // ? Array of strings
@@ -133,5 +145,15 @@ void strArrayFree(strArray* s) {
         strFree(&s->data[i]);
     }
     free(s->data);
+}
+
+void strArrayCopy(strArray* dest, strArray src) {
+    dest->length = src.length;
+    dest->data = (str*)malloc(sizeof(str) * src.length);
+    for (int i = 0; i < dest->length; i++) {
+        strSet(&dest->data[i], strGet(src.data[i]));
+    }
+    printf("strArrayCopy passed+++++++++++++++\n");
+    strArrayPrint(*dest);
 }
 

@@ -3,14 +3,16 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "str.h" // WTF 
+#include "str.h" 
 
 // ? =============================================================================
 // ? CSV data types
 // ? =============================================================================
 typedef struct Record {
     int id;
-    strArray fields; 
+    str firstName;
+    str lastName;
+    int group;
 } Record;
 
 typedef struct RecordArray {
@@ -18,16 +20,16 @@ typedef struct RecordArray {
     Record* data;
 } RecordArray;
 
-typedef struct RecordNode {
-    Record data;
-    struct RecordNode* next;
-} RecordNode;
+// typedef struct RecordNode {
+//     Record data;
+//     struct RecordNode* next;
+// } RecordNode;
 
-typedef struct RecordLinkedList {
-    RecordNode* head;
-    RecordNode* tail;
-    int length;
-} RecordLinkedList;
+// typedef struct RecordLinkedList {
+//     RecordNode* head;
+//     RecordNode* tail;
+//     int length;
+// } RecordLinkedList;
 
 typedef struct RecordBinaryTree {
     Record data;
@@ -41,26 +43,62 @@ typedef struct RecordBinaryTree {
 
 
 // * Record --------------------------------------------------------------------
-int getFieldsNum(FILE *fp);
 
 int getLinesNum(FILE *fp);
+/*
+// Record RecordInit()
 
-Record RecordCreate(int FieldsNum);
+// void SetRecord(Record *record, int id, str firstName, str lastName, int group);
 
-void SetRecord(Record *record, int id, strArray fields);
+// Record getCSVLine(FILE *fp)
 
-void PrintRecord(Record record);
-
+// void PrintRecord(Record record);
+*/
 // * RecordArray --------------------------------------------------------------
 
-RecordArray RecordArrayCreate(int length);
-
-void PrintRecordArray(RecordArray arr);
+// RecordArray* createRecordArray() 
+void printRecordArray(RecordArray* array);
+// void PrintRecordArray(RecordArray arr)
 
 // void RecordArraySet(RecordArray* s, int index, Record record);
 
 
+// * RecordLinkedList ----------------------------------------------------------
 
-RecordArray ArrStoreCSV(FILE *fp);
+// * RecordBinaryTree ----------------------------------------------------------
+
+RecordBinaryTree* createTreeNode(const Record* record);
+
+RecordBinaryTree* insertRecordBinaryTree(RecordBinaryTree* root, const Record* record);
+
+void printBinaryTreeInc(RecordBinaryTree* root);
+void printBinaryTreeDec(RecordBinaryTree* root);
+
+void printBinaryTree(RecordBinaryTree* root, int order);
+
+void freeBinaryTree(RecordBinaryTree* root);
+
+// * Hash Table ---------------------------------------------------------------
+RecordArray HashTable(RecordArray* array,int algorithm);
+
+// liniar hash table
+int hash(int key, int size);
+
+void insertRecordLinear(RecordArray* table,Record* record);
+
+RecordArray linearHashArrayToTable(RecordArray* array);
+
+// double hash table
+int hash2(int key);
+
+void insertRecordDouble(RecordArray* table,Record* record);
+
+RecordArray doubleHashArrayToTable(RecordArray* array);
+
+// ? storing CSV data =========================================================
+// RecordArray* ArrStoreCSV(FILE *fp);
+void CSVToArrayRecords(FILE* file, RecordArray* array);
+// void CSVToArrayRecords(const char* filename, RecordArray* array);
+void CSVToBinaryTree(FILE* file, RecordBinaryTree** root); 
 
 #endif

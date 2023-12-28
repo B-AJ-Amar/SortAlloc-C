@@ -1,3 +1,12 @@
+/*
+MIT License
+
+Copyright (c) 2023 Bouakaz Amar Abdeldjalil
+
+for the last version of this file visit :
+    github repository : https://github.com/B-AJ-Amar/StrKit.git
+*/
+
 #ifndef STR_H
 #define STR_H
 
@@ -25,6 +34,8 @@ void strInsert(str* myStr, char* InStr, int index);
 
 void strFree(str* s);
 
+void strPrint(str s);
+
 // TODO : strReplace , strRemove , strSubstr , strFind , strSplit  , strReverse , strTrim
 
 
@@ -40,6 +51,8 @@ typedef struct strArray {
 strArray strArrayCreate(int length);
 
 void strArraySet(strArray* s, int index, const char* strIn); 
+
+void strArrayCopy(strArray* dest, strArray src);
 
 void strArrayPrint(strArray s);
 str strArrayGet(strArray s, int index);

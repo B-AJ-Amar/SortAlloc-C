@@ -2,8 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include "lib/str.h" // my srting library 
-#include "csv.h" // my csv library
+#include "sort.h" // my csv library
 
 
 // ? Macros ========================================================================================
@@ -30,16 +29,18 @@ int main() {
         clearScreen;
         printf("Enter a path: ");
         scanf("%s", path);
+        printf("path: %s\n", path);
         fp = fopen(path, "r");
     } while (fp == NULL);
     // *Part 2 : get the number of the fields of the CSV file------------------------------------
-    
+    // ? this part is removed , because the plan changed 
+    // ? check the plan-A branch for the old code
+    // ? if i had time i will fix the old code because it is more efficient
+    // ? the idea of the old code is no metter how many fields in the csv file
+    // ? it just take the first fields as an id and put the rest in an array of strings
+
     char line[MAX_LINE_SIZE] ;
     
-    int fieldsNum = getFieldsNum(fp);
-    printf("Fields number: %d\n", fieldsNum);
-    printf("the first line: %s\n", fgets(line, MAX_LINE_SIZE, fp));
-
 
     // *Part 3 : choosing the alocation method ------------------------------------------------
     int choice;
@@ -53,8 +54,39 @@ int main() {
         scanf("%d", &choice);
         fflush(stdin);
     } while (choice < 1 || choice > 3);
+
+
+    if (choice == 1)
+    {
+        printf("> Storing csv in Array ===============================\n");
+        RecordArray* newArray = (RecordArray*)malloc(sizeof(RecordArray));
+        newArray->length = 0;
+        newArray->data = NULL;
+        CSVToArrayRecords(fp, newArray);
+        printRecordArray(newArray);
+        printf("> Sorting csv in Array ===============================\n");
+        ArraySort(newArray, 0, 4);
+        printRecordArray(newArray);
+        printf("> hash csv in Array ===============================\n");
+        RecordArray hashArray = HashTable(newArray,1);
+        printRecordArray(&hashArray);
+        // RecordArray csv = ArrStoreCSV(fp);
+        // PrintRecordArray(*csv);
+
+
+    }
+    else if (choice == 2)
+    {
+        printf("Linked List\n");
+    }
+    else
+    {
+        RecordBinaryTree* root = NULL;
+        CSVToBinaryTree(fp, &root);
+        printBinaryTree(root, 0 );
+        printf("binary tree\n");
+    }
     
-    printf("Fields number: %d\n", fieldsNum);
     // using strtoc
 
 
