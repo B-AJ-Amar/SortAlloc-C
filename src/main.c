@@ -13,9 +13,6 @@
 
 // ? functions =====================================================================================
 
-// ? getFieldsNum : get the number of fields in a CSV file
-
-// fix stupid CODE   
 
 // ? Main ==========================================================================================
 int main() {
@@ -26,7 +23,7 @@ int main() {
     // * Part 1 : get a path from the user ------------------------------------------------------
     do
     {
-        clearScreen;
+        system("cls");
         printf("Enter a path: ");
         scanf("%s", path);
         printf("path: %s\n", path);
@@ -58,20 +55,65 @@ int main() {
 
     if (choice == 1)
     {
+        int sortAlgorithm,sortDirection,isHashed;
+        RecordArray* hashArray = NULL;
         printf("> Storing csv in Array ===============================\n");
         RecordArray* newArray = (RecordArray*)malloc(sizeof(RecordArray));
         newArray->length = 0;
         newArray->data = NULL;
         CSVToArrayRecords(fp, newArray);
-        printRecordArray(newArray);
-        printf("> Sorting csv in Array ===============================\n");
-        ArraySort(newArray, 0, 4);
-        printRecordArray(newArray);
-        printf("> hash csv in Array ===============================\n");
-        RecordArray hashArray = HashTable(newArray,1);
-        printRecordArray(&hashArray);
-        // RecordArray csv = ArrStoreCSV(fp);
-        // PrintRecordArray(*csv);
+        do
+        {
+            printf("do you want to hash data (1=yes/0=no): ");
+            scanf("%d", &isHashed);
+            fflush(stdin);
+        } while (isHashed!=0 && isHashed != 1);
+        
+        if (isHashed == 1)
+        {
+            printf("> hashing csv in Array ===============================\n");
+            hashArray = (RecordArray*)malloc(sizeof(RecordArray));
+            *hashArray = HashTable(newArray, 0);
+            printf("donn\n");
+        }
+
+        do
+        {
+            printf("choose the sort algorithm: \n");
+            printf("    1- Bubble Sort\n");
+            printf("    2- selection Sort\n");
+            printf("    3- insertion Sort\n");
+            printf("    4- Quick Sort\n");
+            printf("    5- Merge Sort\n");
+            printf("> ");
+            scanf("%d", &sortAlgorithm);
+            fflush(stdin);
+        } while (sortAlgorithm<1 || sortAlgorithm > 5);
+        
+        do
+        {
+            printf("choose the sort direction: \n");
+            printf("    1- Ascending\n");
+            printf("    2- Descending\n");
+            printf("> ");
+            scanf("%d",&sortDirection);
+            fflush(stdin);
+        } while (sortDirection!=2 && sortDirection != 1);
+
+            printf("> Sorting csv in Array ===============================\n");
+        if(isHashed)
+        {
+            ArraySort(hashArray, sortDirection-1, sortAlgorithm-1);
+            printRecordArray(hashArray);
+        }    
+        else{
+            ArraySort(newArray, sortDirection-1, sortAlgorithm-1);
+            printRecordArray(newArray);
+
+        } 
+        
+
+        
 
 
     }
