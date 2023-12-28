@@ -122,6 +122,10 @@ int main() {
         RecordLinkedList* newLList = createRecordLinkedList();
         CSVToLinkedList(fp, newLList);
         printLinkedList(newLList);
+        printf("hashing\n");
+        RecordArray hashedLL = HashTableLL(newLList, 0);
+        printf("printing\n");
+        printRecordArray(&hashedLL);
         printf("Linked List\n");
     }
     else
