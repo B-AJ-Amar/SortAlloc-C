@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// #include "lib/str.h" // my srting library 
 #include "sort.h" // my csv library
 
 
@@ -68,6 +67,9 @@ int main() {
         printf("> Sorting csv in Array ===============================\n");
         ArraySort(newArray, 0, 4);
         printRecordArray(newArray);
+        printf("> hash csv in Array ===============================\n");
+        RecordArray hashArray = HashTable(newArray,1);
+        printRecordArray(&hashArray);
         // RecordArray csv = ArrStoreCSV(fp);
         // PrintRecordArray(*csv);
 

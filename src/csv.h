@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "str.h" // WTF 
+#include "str.h" 
 
 // ? =============================================================================
 // ? CSV data types
@@ -61,11 +61,27 @@ int getLinesNum(FILE *fp);
 // void PrintRecordArray(RecordArray arr)
 
 // void RecordArraySet(RecordArray* s, int index, Record record);
+// * Hash Table ---------------------------------------------------------------
+RecordArray HashTable(RecordArray* array,int algorithm);
 
+// liniar hash table
+int hash(int key, int size);
+
+void insertRecordLinear(RecordArray* table,Record* record);
+
+RecordArray linearHashArrayToTable(RecordArray* array);
+
+// double hash table
+int hash2(int key);
+
+void insertRecordDouble(RecordArray* table,Record* record);
+
+RecordArray doubleHashArrayToTable(RecordArray* array);
 
 // ? storing CSV data =========================================================
 // RecordArray* ArrStoreCSV(FILE *fp);
 void CSVToArrayRecords(FILE* file, RecordArray* array);
 // void CSVToArrayRecords(const char* filename, RecordArray* array);
 void printRecordArray(RecordArray* array);
+
 #endif

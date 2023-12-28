@@ -47,12 +47,98 @@ RecordArray* createRecordArray() {
 }
 
 void printRecordArray(RecordArray* array) {
+
+    printf("+---------+------------------------------+-------------------------------------+\n");
+    printf("|id       |first name                    |last name                     |group |\n");
+    printf("+---------+------------------------------+-------------------------------------+\n");
     for (int i = 0; i < array->length; i++) {
-        printf("%d, %s, %s, %d\n", array->data[i].id, array->data[i].firstName.data, array->data[i].lastName.data, array->data[i].group);
+        printf("|%d ", array->data[i].id);
+        printf("|%s", array->data[i].firstName.data);
+        for (int j = 0; j < 30 - array->data[i].firstName.length; j++)printf(" ");
+        printf("|%s", array->data[i].lastName.data);
+        for (int j = 0; j < 30 - array->data[i].lastName.length; j++)printf(" ");
+        printf("|%d     |\n", array->data[i].group);
     }
+  
+    printf("+---------+------------------------------+-------------------------------------+\n");
+}
+// ? hash table ========================================================================
+
+// the general hash function
+RecordArray HashTable(RecordArray* array,int algorithm){
+    if (algorithm==0) return linearHashArrayToTable(array);
+    return doubleHashArrayToTable(array);
 }
 
+// * Liniar Hashing ----------------------------------------------------------
+int hash(int key, int size) {
+    return key % size;
+}
 
+// Function to insert a record into the hash table using linear probing
+void insertRecordLinear(RecordArray* table,Record* record) {
+    int key = record->id;
+    int index = hash(key, table->length);
+
+    // Linear probing to handle collisions
+    while (table->data[index].id != -1) {
+        index = (index + 1) % table->length;
+    }
+
+    // Insert the record at the found index
+    table->data[index] = *record;
+}
+
+RecordArray linearHashArrayToTable(RecordArray* array) {
+    RecordArray newTable = {array->length, (Record*)malloc(array->length * sizeof(Record))};
+
+    for (int i = 0; i < array->length; i++) {
+        // Initialize the new table with empty records
+        newTable.data[i].id = -1;
+    }
+
+    for (int i = 0; i < array->length; i++) {
+        insertRecordLinear(&newTable, &array->data[i]); // Using a step size of 1 for linear probing
+    }
+
+    return newTable;
+}
+// * Double Hashing ----------------------------------------------------------
+
+// Second hash function for double hashing (using prime number)
+int hash2(int key) {
+    return 13 - (key % 13);
+}
+
+// Function to insert a record into the hash table using double hashing
+void insertRecordDouble(RecordArray* table,Record* record) {
+    int key = record->id;
+    int index = hash(key, table->length);
+    int stepSize = hash2(key);
+
+    // Double hashing to handle collisions
+    while (table->data[index].id != -1) {
+        index = (index + stepSize ) % table->length;
+    }
+
+    // Insert the record at the found index
+    table->data[index] = *record;
+}
+
+RecordArray doubleHashArrayToTable(RecordArray* array) {
+    RecordArray newTable = {array->length, (Record*)malloc(array->length * sizeof(Record))};
+
+    for (int i = 0; i < array->length; i++) {
+        // Initialize the new table with empty records
+        newTable.data[i].id = -1;
+    }
+
+    for (int i = 0; i < array->length; i++) {
+        insertRecordDouble(&newTable, &array->data[i]); // Using a step size of 1 for double hashing
+    }
+
+    return newTable;
+}
 
 // ? ========================================================================
 // ? CSV store data
