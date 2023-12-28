@@ -31,11 +31,11 @@ typedef struct RecordArray {
 //     int length;
 // } RecordLinkedList;
 
-// typedef struct RecordBinaryTree {
-//     Record data;
-//     struct RecordBinaryTree* left;
-//     struct RecordBinaryTree* right;
-// } RecordBinaryTree;
+typedef struct RecordBinaryTree {
+    Record data;
+    struct RecordBinaryTree* left;
+    struct RecordBinaryTree* right;
+} RecordBinaryTree;
 
 
 
@@ -57,10 +57,27 @@ int getLinesNum(FILE *fp);
 // * RecordArray --------------------------------------------------------------
 
 // RecordArray* createRecordArray() 
-
+void printRecordArray(RecordArray* array);
 // void PrintRecordArray(RecordArray arr)
 
 // void RecordArraySet(RecordArray* s, int index, Record record);
+
+
+// * RecordLinkedList ----------------------------------------------------------
+
+// * RecordBinaryTree ----------------------------------------------------------
+
+RecordBinaryTree* createTreeNode(const Record* record);
+
+RecordBinaryTree* insertRecordBinaryTree(RecordBinaryTree* root, const Record* record);
+
+void printBinaryTreeInc(RecordBinaryTree* root);
+void printBinaryTreeDec(RecordBinaryTree* root);
+
+void printBinaryTree(RecordBinaryTree* root, int order);
+
+void freeBinaryTree(RecordBinaryTree* root);
+
 // * Hash Table ---------------------------------------------------------------
 RecordArray HashTable(RecordArray* array,int algorithm);
 
@@ -82,6 +99,6 @@ RecordArray doubleHashArrayToTable(RecordArray* array);
 // RecordArray* ArrStoreCSV(FILE *fp);
 void CSVToArrayRecords(FILE* file, RecordArray* array);
 // void CSVToArrayRecords(const char* filename, RecordArray* array);
-void printRecordArray(RecordArray* array);
+void CSVToBinaryTree(FILE* file, RecordBinaryTree** root); 
 
 #endif

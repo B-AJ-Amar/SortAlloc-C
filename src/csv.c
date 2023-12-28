@@ -62,6 +62,85 @@ void printRecordArray(RecordArray* array) {
   
     printf("+---------+------------------------------+-------------------------------------+\n");
 }
+
+// ? Binary tree ========================================================================
+
+// Function to create a new RecordBinaryTree node
+RecordBinaryTree* createTreeNode(const Record* record) {
+    RecordBinaryTree* newNode = (RecordBinaryTree*)malloc(sizeof(RecordBinaryTree));
+    newNode->data = *record;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to insert a record into the binary search tree
+RecordBinaryTree* insertRecordBinaryTree(RecordBinaryTree* root, const Record* record) {
+    if (root == NULL) {
+        return createTreeNode(record);
+    }
+
+    // Compare IDs to decide whether to insert left or right
+    if (record->id < root->data.id) {
+        root->left = insertRecordBinaryTree(root->left, record);
+    } else if (record->id > root->data.id) {
+        root->right = insertRecordBinaryTree(root->right, record);
+    }
+
+    return root;
+}
+
+// print records in increasing order of their IDs
+void printBinaryTreeInc(RecordBinaryTree* root) {
+    if (root != NULL) {
+        printBinaryTreeInc(root->left);
+
+            printf("|%d ", root->data.id);
+            printf("|%s", root->data.firstName.data);
+            for (int j = 0; j < 30 - root->data.firstName.length; j++)printf(" ");
+            printf("|%s", root->data.lastName.data);
+            for (int j = 0; j < 30 - root->data.lastName.length; j++)printf(" ");
+            printf("|%d     |\n", root->data.group);
+    
+        printBinaryTreeInc(root->right);
+    }    
+}
+
+void printBinaryTreeDec(RecordBinaryTree* root) {
+    if (root != NULL) {
+        printBinaryTreeDec(root->right);
+            
+            printf("|%d ", root->data.id);
+            printf("|%s", root->data.firstName.data);
+            for (int j = 0; j < 30 - root->data.firstName.length; j++)printf(" ");
+            printf("|%s", root->data.lastName.data);
+            for (int j = 0; j < 30 - root->data.lastName.length; j++)printf(" ");
+            printf("|%d     |\n", root->data.group);
+        
+        printBinaryTreeDec(root->left);
+    }
+    else printf("empty tree\n");
+}
+
+void printBinaryTree(RecordBinaryTree* root, int order) {
+    printf("+---------+------------------------------+-------------------------------------+\n");
+    printf("|id       |first name                    |last name                     |group |\n");
+    printf("+---------+------------------------------+-------------------------------------+\n");
+    if (order == 0) printBinaryTreeInc(root);
+    else printBinaryTreeDec(root);
+    
+    printf("+---------+------------------------------+-------------------------------------+\n");
+}
+
+void freeBinaryTree(RecordBinaryTree* root) {
+    if (root != NULL) {
+        freeBinaryTree(root->left);
+        freeBinaryTree(root->right);
+        free(root);
+    }
+}
+
+
 // ? hash table ========================================================================
 
 // the general hash function
@@ -189,3 +268,36 @@ void CSVToArrayRecords(FILE* file, RecordArray* array) {
     }
 
 }
+
+
+//* II- BinaryTree ================================================================
+void CSVToBinaryTree(FILE* file, RecordBinaryTree** root) {
+    if (file == NULL) {
+        perror("Error opening file");
+        exit(EXIT_FAILURE);
+    }
+
+    char line[MAX_LINE_SIZE];
+   
+    while( fgets ( line, sizeof line, file ) != NULL ){ 
+
+        Record* record= (Record*)malloc(sizeof(Record));
+
+        char* token = strtok(line, ",");
+        record->id = atoi(token);
+
+        token = strtok(NULL, ",");
+        record->firstName = strCreate(token);
+
+        token = strtok(NULL, ",");
+        record->lastName = strCreate(token);
+
+        token = strtok(NULL, ",");
+        record->group = atoi(token);
+
+        *root = insertRecordBinaryTree(*root, record);
+    }
+
+}
+
+
