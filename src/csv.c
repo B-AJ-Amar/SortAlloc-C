@@ -205,9 +205,17 @@ void freeLinkedList(RecordLinkedList* list) {
     free(list);
 }
 
+// ? ========================================================================
+// ? hash table 
+// ? =========================================================================
+int hash(int key, int size) {
+    return key % size;
+}
 
-// ? hash table ========================================================================
-
+int hash2(int key) {
+    return 13 - (key % 13);
+}
+// @ Arrays  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // the general hash function
 RecordArray HashTable(RecordArray* array,int algorithm){
     if (algorithm==0) return linearHashArrayToTable(array);
@@ -215,9 +223,6 @@ RecordArray HashTable(RecordArray* array,int algorithm){
 }
 
 // * Liniar Hashing ----------------------------------------------------------
-int hash(int key, int size) {
-    return key % size;
-}
 
 void insertRecordLinear(RecordArray* table,Record* record) {
     int key = record->id;
@@ -245,9 +250,6 @@ RecordArray linearHashArrayToTable(RecordArray* array) {
 }
 // * Double Hashing ----------------------------------------------------------
 
-int hash2(int key) {
-    return 13 - (key % 13);
-}
 
 void insertRecordDouble(RecordArray* table,Record* record) {
     int key = record->id;
@@ -274,6 +276,39 @@ RecordArray doubleHashArrayToTable(RecordArray* array) {
 
     return newTable;
 }
+
+
+// @ Linked Lists +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+RecordArray HashTableLL(RecordLinkedList* array,int algorithm){
+    if (algorithm==0) return linearHashLinkedListToTable(array);
+    // return doubleHashArrayToTable(array);
+    return linearHashLinkedListToTable(array);
+}
+// * Liniar Hashing ----------------------------------------------------------
+
+
+RecordArray linearHashLinkedListToTable(RecordLinkedList* list) {
+    int tableSize = list->length;
+    RecordArray newTable = {tableSize, malloc(tableSize * sizeof(Record))};
+
+    for (int i = 0; i < tableSize; i++) {
+        newTable.data[i].id = -1; // -1 ==> empty
+    }
+
+    // for (int i = 0; i < tableSize; i++) {
+        RecordNode* current = list->head;
+        do{
+            insertRecordLinear(&newTable, &current->data);
+            current = current->next;
+        }
+        while (current != NULL) ;
+    // }
+
+    return newTable;
+}
+
+
 
 // ? ========================================================================
 // ? CSV store data

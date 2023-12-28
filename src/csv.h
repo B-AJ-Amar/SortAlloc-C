@@ -87,21 +87,30 @@ void printBinaryTree(RecordBinaryTree* root, int order);
 void freeBinaryTree(RecordBinaryTree* root);
 
 // * Hash Table ---------------------------------------------------------------
-RecordArray HashTable(RecordArray* array,int algorithm);
-
 // liniar hash table
 int hash(int key, int size);
+
+// double hash table
+int hash2(int key);
+
+RecordArray HashTable(RecordArray* array,int algorithm);
 
 void insertRecordLinear(RecordArray* table,Record* record);
 
 RecordArray linearHashArrayToTable(RecordArray* array);
 
-// double hash table
-int hash2(int key);
-
 void insertRecordDouble(RecordArray* table,Record* record);
 
 RecordArray doubleHashArrayToTable(RecordArray* array);
+
+// +++++++++++++++++++++++++++
+
+RecordArray HashTableLL(RecordLinkedList* array,int algorithm);
+
+RecordArray linearHashLinkedListToTable(RecordLinkedList* list);
+
+
+
 
 // ? storing CSV data =========================================================
 // RecordArray* ArrStoreCSV(FILE *fp);
