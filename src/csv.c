@@ -214,7 +214,7 @@ int hash(int key, int size) {
 }
 
 int hash2(int key) {
-    return 13 - (key % 13);
+    return 5 - (key % 5);
 }
 void insertRecordLinear(RecordArray* table,Record* record) {
     int key = record->id;
@@ -310,8 +310,10 @@ RecordArray doubleHashLinkedList(RecordLinkedList* list) {
 
         RecordNode* current = list->head;
         do{
+            printf("hashing id = %d\n",current->data.id);
             insertRecordDouble(&newTable, &current->data);
             current = current->next;
+            // printf("the next id = %d\n",current->data.id);
         }
         while (current != NULL) ;
 
