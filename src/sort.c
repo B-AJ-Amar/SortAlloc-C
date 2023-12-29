@@ -12,6 +12,9 @@
 
 // ! i didn't make sort algorithms for binary tree because its already sorted
 
+
+// ! there is a problem in quicksort Linked lists i will ix it later
+
 void ArraySort(RecordArray* array, int direction, int sortAlgorithm) {
     int sortTypes = 5;
     if (sortAlgorithm % sortTypes == 0) ArrayBubbleSortById(array, direction);
@@ -448,30 +451,54 @@ void insertionSortLinkedList(RecordLinkedList* list,int direction) {
 
 // Function to partition the linked list and return the pivot node
 // patitionLLQS = partition linked list quick sort
+RecordNode* getLastNode(RecordNode* list) {
+    if (list == NULL)
+        return NULL;
+
+    while (list->next != NULL) {
+        list = list->next;
+    }
+
+    return list;
+}
+
+
+
 RecordNode* partitionLLQS(RecordNode* low, RecordNode* high) {
     RecordNode* pivot = high;
     RecordNode* i = low;
 
-    for (RecordNode* j = low; j != high; j = j->next) {
-        if (j->data.id >= pivot->data.id) {
-            swapRecordNodesLL(i, j);
+    while (low != high) {
+        if (low->data.id < pivot->data.id) {
+            swapRecordNodesLL(i, low);
             i = i->next;
         }
+        low = low->next;
     }
 
     swapRecordNodesLL(i, high);
 
     return i;
 }
-
 // Function to perform quicksort on a linked list
 void quickSortLinkedList(RecordNode* low, RecordNode* high) {
+
+    printf("sorting %d to %d\n",low->data.id,high->data.id);
     if (high != NULL && low != high && low != high->next) {
         RecordNode* pivot = partitionLLQS(low, high);
 
         quickSortLinkedList(low, pivot);
         quickSortLinkedList(pivot->next, high);
     }
+}
+
+// Function to perform quicksort on a linked list
+void quickSortLinkedListWrapper(RecordLinkedList* list) {
+    RecordNode* head = list->head;
+    RecordNode* tail = list->tail;
+
+    quickSortLinkedList(head, tail);
+    list->head = head;
 }
 
 // * merge sort ================================================================

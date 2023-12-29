@@ -31,24 +31,9 @@ void selectionSortLinkedList(RecordLinkedList* list,int direction) ;
 
 void insertionSortLinkedList(RecordLinkedList* list,int direction);
 
-// void swapNodesLL(RecordNode* a, RecordNode* b);
-
-
-// RecordNode* partitionLLQS(RecordNode* low, RecordNode* high);
-
 void quickSortLinkedList(RecordNode* low, RecordNode* high);
 
-// void splitList(RecordNode* head, RecordNode** left, RecordNode** right);
-
-// RecordNode* mergeLinkedList(RecordNode* left, RecordNode* right);
-
 void mergeSortLinkedList(RecordNode** head,int direction);
-
-// RecordNode* IMergeLL(RecordNode* left, RecordNode* right);
-
-// RecordNode* DMergeLL(RecordNode* left, RecordNode* right);
-
-// void mergeSortLinkedList(RecordLinkedList* list,int direction) ;
 
 void LLSort(RecordLinkedList* list, int direction, int sortAlgorithm);
 #endif

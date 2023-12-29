@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "sort.h" // my csv library
-
+// ! this main function is just for testing, i didnt make it yet
 
 // ? Macros ========================================================================================
 #define MAX_PATH_LEN 256 // Max length of a path in windows is 256 characters
@@ -122,7 +122,7 @@ int main() {
         RecordLinkedList* newLList = createRecordLinkedList();
         CSVToLinkedList(fp, newLList);
         printLinkedList(newLList);
-        LLSort(newLList, 0, 4);
+        LLSort(newLList, 0, 5);
         printLinkedList(newLList);
         // printf("hashing\n");
         // RecordArray hashedLL = HashTableLL(newLList, 1);
