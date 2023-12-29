@@ -97,25 +97,25 @@ RecordArray HashTable(RecordArray* array,int algorithm);
 
 void insertRecordLinear(RecordArray* table,Record* record);
 
-RecordArray linearHashArrayToTable(RecordArray* array);
+RecordArray linearHashArray(RecordArray* array);
 
 void insertRecordDouble(RecordArray* table,Record* record);
 
-RecordArray doubleHashArrayToTable(RecordArray* array);
+RecordArray doubleHashArray(RecordArray* array);
 
 // +++++++++++++++++++++++++++
 
 RecordArray HashTableLL(RecordLinkedList* array,int algorithm);
 
-RecordArray linearHashLinkedListToTable(RecordLinkedList* list);
+RecordArray linearHashLinkedList(RecordLinkedList* list);
 
-
+RecordArray doubleHashLinkedList(RecordLinkedList* list);
 
 
 // ? storing CSV data =========================================================
-// RecordArray* ArrStoreCSV(FILE *fp);
+
 void CSVToArrayRecords(FILE* file, RecordArray* array);
-// void CSVToArrayRecords(const char* filename, RecordArray* array);
+
 void CSVToBinaryTree(FILE* file, RecordBinaryTree** root); 
 
 void CSVToLinkedList(FILE* file, RecordLinkedList* list);

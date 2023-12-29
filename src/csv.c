@@ -207,7 +207,8 @@ void freeLinkedList(RecordLinkedList* list) {
 
 // ? ========================================================================
 // ? hash table 
-// ? =========================================================================
+// ? ========================================================================
+// FUNCTIONS FOR HASH TABLES 
 int hash(int key, int size) {
     return key % size;
 }
@@ -215,15 +216,6 @@ int hash(int key, int size) {
 int hash2(int key) {
     return 13 - (key % 13);
 }
-// @ Arrays  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-// the general hash function
-RecordArray HashTable(RecordArray* array,int algorithm){
-    if (algorithm==0) return linearHashArrayToTable(array);
-    return doubleHashArrayToTable(array);
-}
-
-// * Liniar Hashing ----------------------------------------------------------
-
 void insertRecordLinear(RecordArray* table,Record* record) {
     int key = record->id;
     int index = hash(key, table->length);
@@ -234,8 +226,26 @@ void insertRecordLinear(RecordArray* table,Record* record) {
 
     table->data[index] = *record;
 }
+void insertRecordDouble(RecordArray* table,Record* record) {
+    int key = record->id;
+    int index = hash(key, table->length);
+    int stepSize = hash2(key);
 
-RecordArray linearHashArrayToTable(RecordArray* array) {
+    while (table->data[index].id != -1) {
+        index = (index + stepSize ) % table->length;
+    }
+
+    table->data[index] = *record;
+}
+// @ Arrays  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+// the general hash function
+RecordArray HashTable(RecordArray* array,int algorithm){
+    if (algorithm==0) return linearHashArray(array);
+    return doubleHashArray(array);
+}
+
+// * Liniar Hashing ----------------------------------------------------------
+RecordArray linearHashArray(RecordArray* array) {
     RecordArray newTable = {array->length, (Record*)malloc(array->length * sizeof(Record))};
 
     for (int i = 0; i < array->length; i++) {
@@ -249,21 +259,7 @@ RecordArray linearHashArrayToTable(RecordArray* array) {
     return newTable;
 }
 // * Double Hashing ----------------------------------------------------------
-
-
-void insertRecordDouble(RecordArray* table,Record* record) {
-    int key = record->id;
-    int index = hash(key, table->length);
-    int stepSize = hash2(key);
-
-    while (table->data[index].id != -1) {
-        index = (index + stepSize ) % table->length;
-    }
-
-    table->data[index] = *record;
-}
-
-RecordArray doubleHashArrayToTable(RecordArray* array) {
+RecordArray doubleHashArray(RecordArray* array) {
     RecordArray newTable = {array->length, (Record*)malloc(array->length * sizeof(Record))};
 
     for (int i = 0; i < array->length; i++) {
@@ -273,22 +269,19 @@ RecordArray doubleHashArrayToTable(RecordArray* array) {
     for (int i = 0; i < array->length; i++) {
         insertRecordDouble(&newTable, &array->data[i]); // Using a step size of 1 for double hashing
     }
-
     return newTable;
 }
-
 
 // @ Linked Lists +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 RecordArray HashTableLL(RecordLinkedList* array,int algorithm){
-    if (algorithm==0) return linearHashLinkedListToTable(array);
-    // return doubleHashArrayToTable(array);
-    return linearHashLinkedListToTable(array);
+    if (algorithm==0) return linearHashLinkedList(array);
+    return doubleHashLinkedList(array);
 }
 // * Liniar Hashing ----------------------------------------------------------
 
 
-RecordArray linearHashLinkedListToTable(RecordLinkedList* list) {
+RecordArray linearHashLinkedList(RecordLinkedList* list) {
     int tableSize = list->length;
     RecordArray newTable = {tableSize, malloc(tableSize * sizeof(Record))};
 
@@ -296,18 +289,34 @@ RecordArray linearHashLinkedListToTable(RecordLinkedList* list) {
         newTable.data[i].id = -1; // -1 ==> empty
     }
 
-    // for (int i = 0; i < tableSize; i++) {
         RecordNode* current = list->head;
         do{
             insertRecordLinear(&newTable, &current->data);
             current = current->next;
         }
         while (current != NULL) ;
-    // }
 
     return newTable;
 }
+// * Double Hash ------------------------------------------------------------
 
+RecordArray doubleHashLinkedList(RecordLinkedList* list) {
+    int tableSize = list->length;
+    RecordArray newTable = {tableSize, malloc(tableSize * sizeof(Record))};
+
+    for (int i = 0; i < tableSize; i++) {
+        newTable.data[i].id = -1; // -1 ==> empty
+    }
+
+        RecordNode* current = list->head;
+        do{
+            insertRecordDouble(&newTable, &current->data);
+            current = current->next;
+        }
+        while (current != NULL) ;
+
+    return newTable;
+}
 
 
 // ? ========================================================================
