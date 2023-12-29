@@ -3,9 +3,17 @@
 #include <string.h>
 #include "sort.h" // my sort library
 
-// ? =============================================================================
-// ? Array
-// ? =============================================================================
+/*
+? in this functions (sort functions ) i could make them shorter by using condition in the loops
+? insead of reapeating the code twice 
+? but this inhance the time complexity of the code
+? because the condition will be checked every time the loop run 
+*/
+
+// ! i didn't make sort algorithms for binary tree because its already sorted
+
+
+// ! there is a problem in quicksort Linked lists i will ix it later
 
 void ArraySort(RecordArray* array, int direction, int sortAlgorithm) {
     int sortTypes = 5;
@@ -17,12 +25,19 @@ void ArraySort(RecordArray* array, int direction, int sortAlgorithm) {
 
 }
 
-/*
-? in this functions i could make them shorter by using condition in the for loop
-? insead of reapeating the code twice 
-? but this inhance the time complexity of the code
-? because the condition will be checked every time the loop run 
-*/
+void LLSort(RecordLinkedList* list, int direction, int sortAlgorithm) {
+    int sortTypes = 5;
+    if (sortAlgorithm % sortTypes == 0) bubbleSortLinkedList(list, direction);
+    else if (sortAlgorithm % sortTypes == 1) selectionSortLinkedList(list, direction);
+    else if (sortAlgorithm % sortTypes == 2) insertionSortLinkedList(list, direction);
+    else if (sortAlgorithm % sortTypes == 3) quickSortLinkedList(list->head, list->tail);
+    else if (sortAlgorithm % sortTypes == 4) mergeSortLinkedList(&(list->head),direction);
+}
+// ? =============================================================================
+// ? Array
+// ? =============================================================================
+
+
 
 // * Bubble sort ==============================================================
 void ArrayBubbleSortById(RecordArray* array, int direction) {
@@ -276,5 +291,301 @@ void ArrayMergeSort(RecordArray* array, int left, int right, int direction) {
         ArrayMergeSort(array, middle + 1, right, direction);
 
         DMerge(array, left, middle, right);
+    }
+}
+// ? =============================================================================
+// ? Linked List
+// ? =============================================================================
+
+
+
+
+void swapRecordsLL(Record* a, Record* b) {
+    Record temp = *a;
+    *a = *b;
+    *b = temp;
+}
+// * bubble sort ==============================================================
+void bubbleSortLinkedList(RecordLinkedList* list,int direction) {
+    int swapped;
+    RecordNode* ptr1;
+    RecordNode* lptr = NULL;
+
+    if (list->head == NULL) return;
+    // dec order
+    if (!direction){
+        do {
+            swapped = 0;
+            ptr1 = list->head;
+
+            while (ptr1->next != lptr) {
+                // Compare adjacent records and swap if necessary
+                if (ptr1->data.id > ptr1->next->data.id) {
+                    swapRecordsLL(&(ptr1->data), &(ptr1->next->data));
+                    swapped = 1;
+                }
+                ptr1 = ptr1->next;
+            }
+            lptr = ptr1;
+        } while (swapped);
+        return;
+    }
+    // inc order
+    do {
+        swapped = 0;
+        ptr1 = list->head;
+
+        while (ptr1->next != lptr) {
+            // Compare adjacent records and swap if necessary
+            if (ptr1->data.id < ptr1->next->data.id) {
+                swapRecordsLL(&(ptr1->data), &(ptr1->next->data));
+                swapped = 1;
+            }
+            ptr1 = ptr1->next;
+        }
+        lptr = ptr1;
+    } while (swapped);
+}
+
+// * selection sort ===========================================================
+
+void swapRecordNodesLL(RecordNode* a, RecordNode* b) {
+    Record temp = a->data;
+    a->data = b->data;
+    b->data = temp;
+}
+
+void selectionSortLinkedList(RecordLinkedList* list,int direction) {
+    RecordNode* current;
+    RecordNode* index;
+    RecordNode* min;
+
+
+    if(list->head == NULL) return;
+    // increasing order
+    if (direction){
+        for (current = list->head; current->next != NULL; current = current->next) {
+            min = current;
+
+            for (index = current->next; index != NULL; index = index->next) {
+                if (index->data.id < min->data.id) {
+                    min = index;
+                }
+            }
+            swapRecordNodesLL(current, min);
+        }
+        return;
+    }
+    // decreasing order
+    for (current = list->head; current != NULL; current = current->next) {
+        min = current; // this var should be the max but because min is already declared i will use it
+
+        for (index = current->next; index != NULL; index = index->next) {
+            if (index->data.id > min->data.id) {
+                min = index;
+            }
+        }
+        swapRecordNodesLL(current, min);
+    }
+}
+
+// * insertion sort ===========================================================
+
+void insertionSortLinkedList(RecordLinkedList* list,int direction) {
+    RecordNode* current = list->head;
+    RecordNode* sorted = NULL;
+    if (list->head == NULL) return;
+
+    // increasing order
+    if(direction){
+        while (current != NULL) {
+            RecordNode* next = current->next;
+
+            // Move the current node to the sorted part of the list
+            if (sorted == NULL || sorted->data.id > current->data.id) {
+                current->next = sorted;
+                sorted = current;
+            } else {
+                // Search for the correct position in the sorted part
+                RecordNode* temp = sorted;
+                while (temp->next != NULL && temp->next->data.id < current->data.id) {
+                    temp = temp->next;
+                }
+                current->next = temp->next;
+                temp->next = current;
+            }
+
+            current = next;
+        }
+
+        list->head = sorted;
+        return;
+    }
+    // decreasing order
+    while (current != NULL) {
+        RecordNode* next = current->next;
+
+        // Move the current node to the sorted part of the list
+        if (sorted == NULL || sorted->data.id < current->data.id) {
+            current->next = sorted;
+            sorted = current;
+        } else {
+            // Search for the correct position in the sorted part
+            RecordNode* temp = sorted;
+            while (temp->next != NULL && temp->next->data.id > current->data.id) {
+                temp = temp->next;
+            }
+            current->next = temp->next;
+            temp->next = current;
+        }
+
+        current = next;
+    }
+
+    list->head = sorted;
+}
+
+
+// * quick sort ================================================================
+
+
+// Function to partition the linked list and return the pivot node
+// patitionLLQS = partition linked list quick sort
+RecordNode* getLastNode(RecordNode* list) {
+    if (list == NULL)
+        return NULL;
+
+    while (list->next != NULL) {
+        list = list->next;
+    }
+
+    return list;
+}
+
+
+
+RecordNode* partitionLLQS(RecordNode* low, RecordNode* high) {
+    RecordNode* pivot = high;
+    RecordNode* i = low;
+
+    while (low != high) {
+        if (low->data.id < pivot->data.id) {
+            swapRecordNodesLL(i, low);
+            i = i->next;
+        }
+        low = low->next;
+    }
+
+    swapRecordNodesLL(i, high);
+
+    return i;
+}
+// Function to perform quicksort on a linked list
+void quickSortLinkedList(RecordNode* low, RecordNode* high) {
+
+    printf("sorting %d to %d\n",low->data.id,high->data.id);
+    if (high != NULL && low != high && low != high->next) {
+        RecordNode* pivot = partitionLLQS(low, high);
+
+        quickSortLinkedList(low, pivot);
+        quickSortLinkedList(pivot->next, high);
+    }
+}
+
+// Function to perform quicksort on a linked list
+void quickSortLinkedListWrapper(RecordLinkedList* list) {
+    RecordNode* head = list->head;
+    RecordNode* tail = list->tail;
+
+    quickSortLinkedList(head, tail);
+    list->head = head;
+}
+
+// * merge sort ================================================================
+RecordNode* IMergeLinkedList(RecordNode* left, RecordNode* right) {
+    RecordNode* result = NULL;
+
+    if (left == NULL)
+        return right;
+    if (right == NULL)
+        return left;
+
+    if (left->data.id <= right->data.id) {
+        result = left;
+        result->next = IMergeLinkedList(left->next, right);
+    } else {
+        result = right;
+        result->next = IMergeLinkedList(left, right->next);
+    }
+
+    return result;
+}
+
+RecordNode* DMergeLinkedList(RecordNode* left, RecordNode* right) {
+    RecordNode* result = NULL;
+
+    if (left == NULL)
+        return right;
+    if (right == NULL)
+        return left;
+
+    if (left->data.id >= right->data.id) {
+        result = left;
+        result->next = DMergeLinkedList(left->next, right);
+    } else {
+        result = right;
+        result->next = DMergeLinkedList(left, right->next);
+    }
+
+    return result;
+}
+
+// Function to split the linked list into two halves
+void splitList(RecordNode* head, RecordNode** left, RecordNode** right) {
+    if (head == NULL || head->next == NULL) {
+        *left = head;
+        *right = NULL;
+        return;
+    }
+
+    RecordNode* slow = head;
+    RecordNode* fast = head->next;
+
+    while (fast != NULL) {
+        fast = fast->next;
+        if (fast != NULL) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+    }
+
+    *left = head;
+    *right = slow->next;
+    slow->next = NULL;
+}
+
+// Function to perform merge sort on a linked list
+void mergeSortLinkedList(RecordNode** head,int direction) {
+    RecordNode* h = *head;
+    RecordNode* left;
+    RecordNode* right;
+
+    if (h == NULL || h->next == NULL)
+        return;
+
+    splitList(h, &left, &right);
+
+    if (!direction){
+
+        mergeSortLinkedList(&left,0);  // Recursively sort the left half
+        mergeSortLinkedList(&right,0); // Recursively sort the right half
+
+        *head = IMergeLinkedList(left, right);  // Merge the sorted halves
+    }
+    else {
+        mergeSortLinkedList(&left,1);  // Recursively sort the left half
+        mergeSortLinkedList(&right,1); // Recursively sort the right half
+
+        *head = DMergeLinkedList(left, right);  // Merge the sorted halves
     }
 }
