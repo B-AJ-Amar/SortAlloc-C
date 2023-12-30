@@ -30,7 +30,7 @@ void LLSort(RecordLinkedList* list, int direction, int sortAlgorithm) {
     if (sortAlgorithm % sortTypes == 0) bubbleSortLinkedList(list, direction);
     else if (sortAlgorithm % sortTypes == 1) selectionSortLinkedList(list, direction);
     else if (sortAlgorithm % sortTypes == 2) insertionSortLinkedList(list, direction);
-    else if (sortAlgorithm % sortTypes == 3) quickSortLinkedList(list->head, list->tail);
+    else if (sortAlgorithm % sortTypes == 3) quickSortUtil(list->head, list->tail);
     else if (sortAlgorithm % sortTypes == 4) mergeSortLinkedList(&(list->head),direction);
 }
 // ? =============================================================================
@@ -305,6 +305,12 @@ void swapRecordsLL(Record* a, Record* b) {
     *a = *b;
     *b = temp;
 }
+
+void swapRecords(RecordNode* a, RecordNode* b) {
+    Record temp = a->data;
+    a->data = b->data;
+    b->data = temp;
+}
 // * bubble sort ==============================================================
 void bubbleSortLinkedList(RecordLinkedList* list,int direction) {
     int swapped;
@@ -451,54 +457,73 @@ void insertionSortLinkedList(RecordLinkedList* list,int direction) {
 
 // Function to partition the linked list and return the pivot node
 // patitionLLQS = partition linked list quick sort
-RecordNode* getLastNode(RecordNode* list) {
-    if (list == NULL)
-        return NULL;
-
-    while (list->next != NULL) {
-        list = list->next;
+RecordNode* getTail(RecordNode* current) {
+    while (current != NULL && current->next != NULL) {
+        current = current->next;
     }
-
-    return list;
+    return current;
 }
 
+// Function to partition the linked list and return the pivot node
+RecordNode* partitionLL(RecordNode* head, RecordNode* end, RecordNode** newHead, RecordNode** newEnd) {
+    RecordNode* pivot = end;
+    RecordNode* prev = NULL, *current = head, *tail = pivot;
 
+    while (current != pivot) {
+        if (current->data.id <= pivot->data.id) {
+            if (*newHead == NULL)
+                *newHead = current;
 
-RecordNode* partitionLLQS(RecordNode* low, RecordNode* high) {
-    RecordNode* pivot = high;
-    RecordNode* i = low;
-
-    while (low != high) {
-        if (low->data.id < pivot->data.id) {
-            swapRecordNodesLL(i, low);
-            i = i->next;
+            prev = current;
+            current = current->next;
+        } else {
+            if (prev)
+                prev->next = current->next;
+            RecordNode* temp = current->next;
+            current->next = NULL;
+            tail->next = current;
+            tail = current;
+            current = temp;
         }
-        low = low->next;
     }
 
-    swapRecordNodesLL(i, high);
+    if (*newHead == NULL)
+        *newHead = pivot;
 
-    return i;
+    *newEnd = tail;
+
+    return pivot;
 }
-// Function to perform quicksort on a linked list
-void quickSortLinkedList(RecordNode* low, RecordNode* high) {
 
-    printf("sorting %d to %d\n",low->data.id,high->data.id);
-    if (high != NULL && low != high && low != high->next) {
-        RecordNode* pivot = partitionLLQS(low, high);
+// Recursive function to implement quicksort for a linked list
+RecordNode* quickSortUtil(RecordNode* head, RecordNode* end) {
+    if (!head || head == end)
+        return head;
 
-        quickSortLinkedList(low, pivot);
-        quickSortLinkedList(pivot->next, high);
+    RecordNode* newHead = NULL, *newEnd = NULL;
+
+    RecordNode* pivot = partitionLL(head, end, &newHead, &newEnd);
+
+    if (newHead != pivot) {
+        RecordNode* temp = newHead;
+        while (temp->next != pivot)
+            temp = temp->next;
+        temp->next = NULL;
+
+        newHead = quickSortUtil(newHead, temp);
+
+        temp = getTail(newHead);
+        temp->next = pivot;
     }
+
+    pivot->next = quickSortUtil(pivot->next, newEnd);
+
+    return newHead;
 }
 
-// Function to perform quicksort on a linked list
-void quickSortLinkedListWrapper(RecordLinkedList* list) {
-    RecordNode* head = list->head;
-    RecordNode* tail = list->tail;
-
-    quickSortLinkedList(head, tail);
-    list->head = head;
+// Function to sort a linked list using quicksort
+void quickSort(RecordLinkedList* list) {
+    list->head = quickSortUtil(list->head, getTail(list->head));
 }
 
 // * merge sort ================================================================

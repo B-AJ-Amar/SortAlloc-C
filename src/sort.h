@@ -31,7 +31,14 @@ void selectionSortLinkedList(RecordLinkedList* list,int direction) ;
 
 void insertionSortLinkedList(RecordLinkedList* list,int direction);
 
-void quickSortLinkedList(RecordNode* low, RecordNode* high);
+RecordNode* getTail(RecordNode* current);
+
+RecordNode* partitionLL(RecordNode* head, RecordNode* end, RecordNode** newHead, RecordNode** newEnd);
+
+RecordNode* quickSortUtil(RecordNode* head, RecordNode* end);
+
+void quickSort(RecordLinkedList* list);
+
 
 void mergeSortLinkedList(RecordNode** head,int direction);
 

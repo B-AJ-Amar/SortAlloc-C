@@ -56,7 +56,7 @@ int getLinesNum(FILE *fp);
 */
 // * RecordArray --------------------------------------------------------------
 
-// RecordArray* createRecordArray() 
+RecordArray* createRecordArray();
 void printRecordArray(RecordArray* array);
 // void PrintRecordArray(RecordArray arr)
 
