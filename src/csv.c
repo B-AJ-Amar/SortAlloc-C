@@ -114,7 +114,6 @@ void printBinaryTreeDec(RecordBinaryTree* root) {
         
         printBinaryTreeDec(root->left);
     }
-    else printf("empty tree\n");
 }
 
 void printBinaryTree(RecordBinaryTree* root, int order) {
@@ -310,10 +309,8 @@ RecordArray doubleHashLinkedList(RecordLinkedList* list) {
 
         RecordNode* current = list->head;
         do{
-            printf("hashing id = %d\n",current->data.id);
             insertRecordDouble(&newTable, &current->data);
             current = current->next;
-            // printf("the next id = %d\n",current->data.id);
         }
         while (current != NULL) ;
 
