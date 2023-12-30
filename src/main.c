@@ -173,6 +173,7 @@ int main() {
     // *Part 4 : sorting the data ------------------------------------------------------------
     if ( (choice & 0b10 ) == 0b0000010) {
         // * Part 4.1 : sorting the data using binary tree 
+        printf("%s>Loading File ...\n%s",COLOR_GREEN,COLOR_RESET);
         start_time = clock();
         RecordBinaryTree* root = NULL;
         CSVToBinaryTree(fp, &root);
@@ -187,8 +188,8 @@ int main() {
     }
     else if (choice & 0b1) {
         // * Part 4.1 : sorting the data using linked list 
-        start_time = clock();
         printf("%s>Loading File ...\n%s",COLOR_GREEN,COLOR_RESET);
+        start_time = clock();
         RecordLinkedList* list = createRecordLinkedList();
         CSVToLinkedList(fp, list);
         printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
@@ -225,6 +226,7 @@ int main() {
     }
     else {
         // * Part 4.1 : sorting the data using array 
+        printf("%s>Loading File ...\n%s",COLOR_GREEN,COLOR_RESET);
         start_time = clock();
         RecordArray *array = createRecordArray();
         CSVToArrayRecords(fp, array);
