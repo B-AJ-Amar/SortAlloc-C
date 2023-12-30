@@ -51,7 +51,7 @@ void printRecordArray(RecordArray* array) {
     printf("|id       |first name                    |last name                     |group |\n");
     printf("+---------+------------------------------+-------------------------------------+\n");
     for (int i = 0; i < array->length; i++) {
-        printf("|%d ", array->data[i].id);
+        printf("|%8d ", array->data[i].id);
         printf("|%s", array->data[i].firstName.data);
         for (int j = 0; j < 30 - array->data[i].firstName.length; j++)printf(" ");
         printf("|%s", array->data[i].lastName.data);
@@ -90,7 +90,7 @@ void printBinaryTreeInc(RecordBinaryTree* root) {
     if (root != NULL) {
         printBinaryTreeInc(root->left);
 
-            printf("|%d ", root->data.id);
+            printf("|%8d ", root->data.id);
             printf("|%s", root->data.firstName.data);
             for (int j = 0; j < 30 - root->data.firstName.length; j++)printf(" ");
             printf("|%s", root->data.lastName.data);
@@ -105,7 +105,7 @@ void printBinaryTreeDec(RecordBinaryTree* root) {
     if (root != NULL) {
         printBinaryTreeDec(root->right);
             
-            printf("|%d ", root->data.id);
+            printf("|%8d ", root->data.id);
             printf("|%s", root->data.firstName.data);
             for (int j = 0; j < 30 - root->data.firstName.length; j++)printf(" ");
             printf("|%s", root->data.lastName.data);
@@ -176,7 +176,7 @@ void printLinkedList(const RecordLinkedList* list) {
     printf("+---------+------------------------------+-------------------------------------+\n");
 
     while (current != NULL) {
-        printf("|%d ", current->data.id);
+        printf("|%8d ", current->data.id);
         printf("|%s", current->data.firstName.data);
         for (int j = 0; j < 30 - current->data.firstName.length; j++) printf(" ");
         printf("|%s", current->data.lastName.data);
