@@ -6,8 +6,6 @@
 #include <conio.h>
 #include <time.h>
 
-#include <unistd.h>
-
 #include "sort.h" // my csv library
 // ! this main function is just for testing, i didnt make it yet
 
@@ -23,9 +21,8 @@
 #define COLOR_BLUE    "\x1b[36m"
 #define COLOR_RESET   "\x1b[0m"
 // ? functions =====================================================================================
-char path[MAX_PATH_LEN] ;
 // this function takes menu and return the choice of the user
-int menu(int num, ...){
+int menu(char *path,int offset,int num, ...){
     int choice =0;
     char get;
     va_list args;
@@ -36,31 +33,18 @@ int menu(int num, ...){
         printf("[./%s]> %s\n\n",path,va_arg(args, char*));
         for (int i = 0; i < num-1; i++)
         {
-            if (i == choice)
-            {
-                printf("    %s-> %s%s\n",COLOR_BLUE,va_arg(args, char*),COLOR_RESET);
-            }
-            else
-            {
-                printf("       %s\n",va_arg(args, char*));
-            }
+            if (i == choice)printf("    %s-> %s%s\n",COLOR_BLUE,va_arg(args, char*),COLOR_RESET);
+
+            else printf("       %s\n",va_arg(args, char*));
         }
         printf( (choice==num-1 )? "\n%s<- GoBack%s\n" : "\n   GoBack\n",COLOR_RED,COLOR_RESET);
+
         get = getch();
-        if (get==13){
-            return (choice==num-1 )? 0b10000000 : choice;
-        }
-        if (get==0 || get == 0xE0) 
-        {
-            get = getch();
-        }	
-		if (get==72) choice -= (choice>0)? 1:0 ;
-			// printf("UP");
-		else if (get==80) choice +=  (choice<num-1)? 1:0 ;
-			// printf("DOWN");
-        
-    }
-    
+        if (get==13) return (choice==num-1 )? 0b10000000 : choice<<offset; // Enter button
+        if (get==0 || get == 0xE0)  get = getch();	// arrow keys have two codes, the first is 0 or 0xE0
+		if (get==72) choice -= (choice>0)? 1:0 ;    // up arrow
+		else if (get==80) choice +=  (choice<num-1)? 1:0 ; // down arrow
+    }  
 }
 
 /*
@@ -93,13 +77,14 @@ bit 9 : hash algorithm
     1- double           1xxxxxxxx // 256 = 0b100000000
 
 */
-
 // ? Main ==========================================================================================
 int main() {
     // * Variables ------------------------------------------------------------------------------
     FILE *fp; // File pointer
-    int choice = 0,tmp;
-    clock_t start_time,end_time;
+    int choice = 0;
+    char path[MAX_PATH_LEN] ;
+    char line[MAX_LINE_SIZE] ;
+    clock_t start_time;
     // * Part 1 : get a path from the user ------------------------------------------------------
     chooseFile:
         do
@@ -116,60 +101,52 @@ int main() {
     // ? if i had time i will fix the old code because it is more efficient
     // ? the idea of the old code is no metter how many fields in the csv file
     // ? it just take the first fields as an id and put the rest in an array of strings
-
-    char line[MAX_LINE_SIZE] ;
-    
-
     // *Part 3 : choosing the alocation method ------------------------------------------------
     allocMethod:
-        choice = menu(4,"Choose the alocation method:","Array","Linked List","binary tree"); // the first 3 bits
+        choice = menu(path,0,4,"Choose the alocation method:","Array","Linked List","binary tree"); // the first 3 bits
         if (choice & 0b10000000) {
             choice = 0;
             goto chooseFile;
         }
     if (choice == 0b0000010) goto sortDirection; // if he choose binary tree without hashing , we will not take a sort algorithm because it is already sorted
     IsHashed:
-        tmp = menu(3,"do you want to hash data (1=yes/0=no): ","no","yes");
+        choice += menu(path,6,3,"do you want to hash data (1=yes/0=no): ","no","yes");
         // printf("tmp = %d\n",tmp);
         // scanf("%d",&tmp);
-        if (tmp ==128){
+        if ((choice & 0b10000000) ){
             choice = 0;
             goto allocMethod;
         }
-        choice +=   tmp<<6; // the 7th bit
+        // choice +=   tmp<<6; // the 7th bit
         HashAlgorithm:
             if (choice & 0b1000000 ) {
-                tmp = menu(3,"choose the hash algorithm: ","linear","double");
-                if (tmp ==128){
+                choice += menu(path,8,3,"choose the hash algorithm: ","linear","double");
+                if (choice & 0b10000000){
                     choice = choice & 0b00000011;
                     goto IsHashed;
                 }
-                choice +=   tmp<<8; // the 9th bit 1 << 8 = 256
+                // choice +=   tmp<<8; // the 9th bit 1 << 8 = 256
             }
-        
-
-
-  
+          
     // if he choose binary tree without hashing , we will not take a sort algorithm because it is already sorted 0b1000010 = 66
     sortAlgorithm:
         if (choice != 0b0000010){
-            tmp = menu(6,"choose the sort algorithm: ","Bubble Sort","selection Sort","insertion Sort","Quick Sort","Merge Sort"); // the 3rd to 5th bits
-            if (tmp ==128){
+            choice = menu(path,2,6,"choose the sort algorithm: ","Bubble Sort","selection Sort","insertion Sort","Quick Sort","Merge Sort"); // the 3rd to 5th bits
+            if ((choice & 0b10000000)){
                 choice = choice & 0b00000011;
                 goto IsHashed;
             }
-            choice +=   tmp<<2;
+            // choice +=   tmp<<2;
         }
     sortDirection:
-        tmp = menu(3,"choose the sort direction: ","Ascending","Descending");
-        if (tmp ==128){
+        choice += menu(path,5,3,"choose the sort direction: ","Ascending","Descending");
+        if (choice & 0b10000000){
             choice = choice & 0b001000011;
             if (choice == 0b0000010) goto allocMethod;
             goto sortAlgorithm;
         }
-        choice +=   tmp<<5; // the 6th bit
+        // choice +=   tmp<<5; // the 6th bit
 
-    
     // *Part 4 : sorting the data ------------------------------------------------------------
     if ( (choice & 0b10 ) == 0b0000010) {
         // * Part 4.1 : sorting the data using binary tree 
@@ -261,12 +238,8 @@ int main() {
             printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
         }
     }
- 
 
     printf("\n>Do you want to choose another file (1=yes/0=no): ");
     scanf("%d",&choice);
-    if (choice) goto chooseFile;
-       
-
-    
+    if (choice) goto chooseFile;    
 }
