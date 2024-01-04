@@ -114,10 +114,10 @@ RecordArray doubleHashLinkedList(RecordLinkedList* list);
 
 // ? storing CSV data =========================================================
 
-void CSVToArrayRecords(FILE* file, RecordArray* array);
+void FileToArrayRecords(FILE* file, RecordArray* array);
 
-void CSVToBinaryTree(FILE* file, RecordBinaryTree** root); 
+void FileToBinaryTree(FILE* file, RecordBinaryTree** root); 
 
-void CSVToLinkedList(FILE* file, RecordLinkedList* list);
+void FileToLinkedList(FILE* file, RecordLinkedList* list);
 
 #endif

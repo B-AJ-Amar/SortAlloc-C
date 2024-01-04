@@ -153,7 +153,7 @@ int main() {
         printf("%s>Loading File ...\n%s",COLOR_GREEN,COLOR_RESET);
         start_time = clock();
         RecordBinaryTree* root = NULL;
-        CSVToBinaryTree(fp, &root);
+        FileToBinaryTree(fp, &root);
         fclose(fp);
         printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
         // * Part 4.2 : printing the data 
@@ -168,7 +168,7 @@ int main() {
         printf("%s>Loading File ...\n%s",COLOR_GREEN,COLOR_RESET);
         start_time = clock();
         RecordLinkedList* list = createRecordLinkedList();
-        CSVToLinkedList(fp, list);
+        FileToLinkedList(fp, list);
         printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
         fclose(fp);
         // is hashed
@@ -206,7 +206,7 @@ int main() {
         printf("%s>Loading File ...\n%s",COLOR_GREEN,COLOR_RESET);
         start_time = clock();
         RecordArray *array = createRecordArray();
-        CSVToArrayRecords(fp, array);
+        FileToArrayRecords(fp, array);
         fclose(fp);
         printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
         // is hashed

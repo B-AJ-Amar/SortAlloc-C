@@ -338,7 +338,7 @@ void saveTxtLine(char* line,Record* record){
 ? we will use the first method because it's faster and it's not a big deal to waste some space
 */
 
-void CSVToArrayRecords(FILE* file, RecordArray* array) {
+void FileToArrayRecords(FILE* file, RecordArray* array) {
 
     int linesNum = getLinesNum(file);
 
@@ -355,7 +355,7 @@ void CSVToArrayRecords(FILE* file, RecordArray* array) {
 }
 
 //* II- BinaryTree ================================================================
-void CSVToBinaryTree(FILE* file, RecordBinaryTree** root) {
+void FileToBinaryTree(FILE* file, RecordBinaryTree** root) {
 
     char line[MAX_LINE_SIZE];
    
@@ -367,7 +367,7 @@ void CSVToBinaryTree(FILE* file, RecordBinaryTree** root) {
 }
 
 // * III- Linked List ================================================================
-void CSVToLinkedList(FILE* file, RecordLinkedList* list) {
+void FileToLinkedList(FILE* file, RecordLinkedList* list) {
    
     char line[MAX_LINE_SIZE];
 
