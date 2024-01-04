@@ -219,7 +219,7 @@ int main() {
             printf("%s>Sorting ...%s",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             ArraySort(&hashedArray, (choice & 0b11100) >> 2, (choice & 0b100000) >> 5);
-            printf("\n  >Done\n");
+            printf("\n  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
 
             printf("%s>Printing ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
@@ -230,7 +230,7 @@ int main() {
             printf("%s>Sorting ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             ArraySort(array, (choice & 0b11100) >> 2, (choice & 0b100000) >> 5);
-            printf("    >Done\n");
+            printf("\n  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
 
             printf("%s>Printing ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();

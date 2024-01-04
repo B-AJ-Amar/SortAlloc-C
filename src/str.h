@@ -6,9 +6,8 @@ Copyright (c) 2023 Bouakaz Amar Abdeldjalil
 for the last version of this file visit :
     github repository : https://github.com/B-AJ-Amar/StrKit.git
 */
-
-#ifndef STR_H
-#define STR_H
+#ifndef str_h
+#define str_h
 
 #include <stdlib.h>
 
@@ -34,9 +33,39 @@ void strInsert(str* myStr, char* InStr, int index);
 
 void strFree(str* s);
 
-void strPrint(str s);
+// ? ====================================================================================
 
-// TODO : strReplace , strRemove , strSubstr , strFind , strSplit  , strReverse , strTrim
+str strSub(str s, int start, int end);
+
+// ? ====================================================================================
+
+str strUpper(str s);
+
+str strLower(str s);
+
+str strReverse(str s);
+
+str strTrim(str s);
+
+
+// ? ====================================================================================
+
+int strIsDigit(str s);
+
+int strIsAlpha(str s);
+
+int strIsAlphaNum(str s);
+
+int strIsSpace(str s);
+
+int strIsUpper(str s);
+
+int strIsLower(str s);
+
+int strIsPrintable(str s);
+
+
+// TODO : strReplace , strRemove , strSubstr , strFind , strSplit  
 
 
 // ? ====================================================================================
@@ -52,9 +81,8 @@ strArray strArrayCreate(int length);
 
 void strArraySet(strArray* s, int index, const char* strIn); 
 
-void strArrayCopy(strArray* dest, strArray src);
-
 void strArrayPrint(strArray s);
+
 str strArrayGet(strArray s, int index);
 
 int strArraySize(strArray s);

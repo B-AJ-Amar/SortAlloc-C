@@ -3,15 +3,13 @@
 #include <stdlib.h>
 #include <string.h>
 
-
-
 #define MAX_LINE_SIZE 1024 // Max length of a line in a CSV file
-
-
+/*
+the main aim of this file is to read data from a csv , but the plan changed , after i get the new form of the data i will change the code
+*/
 // ? ========================================================================
 // ? Record data types manupulation
 // ? ========================================================================
-
 
 int getLinesNum(FILE *fp){
     int linesNum = 0;
@@ -23,20 +21,7 @@ int getLinesNum(FILE *fp){
     return linesNum;
 }
 
-
-
-
-
-
 // ? recorde array ========================================================================
-// ! there is some error i dont know why 
-// RecordArray* createRecordArray() {
-//     RecordArray* newArray = (RecordArray*)malloc(sizeof(RecordArray));
-//     newArray->length = 0;
-//     newArray->data = NULL;
-//     return newArray;
-// }
-
 
 RecordArray* createRecordArray() {
     RecordArray* newArray = (RecordArray*)malloc(sizeof(RecordArray));
@@ -134,10 +119,7 @@ void freeBinaryTree(RecordBinaryTree* root) {
     }
 }
 
-
 // ? Linked Lists ========================================================================
-
-
 RecordNode* createRecordNode(const Record* record) {
     RecordNode* newNode = (RecordNode*)malloc(sizeof(RecordNode));
     newNode->data = *record;
@@ -167,7 +149,6 @@ void insertRecordLinkedList(RecordLinkedList* list, const Record* record) {
     list->length++;
 }
 
-
 void printLinkedList(const RecordLinkedList* list) {
     RecordNode* current = list->head;
 
@@ -185,7 +166,6 @@ void printLinkedList(const RecordLinkedList* list) {
 
         current = current->next;
     }
-
     printf("+---------+------------------------------+-------------------------------------+\n");
 }
 
@@ -270,7 +250,6 @@ RecordArray doubleHashArray(RecordArray* array) {
     }
     return newTable;
 }
-
 // @ Linked Lists +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 RecordArray HashTableLL(RecordLinkedList* array,int algorithm){
@@ -278,7 +257,6 @@ RecordArray HashTableLL(RecordLinkedList* array,int algorithm){
     return doubleHashLinkedList(array);
 }
 // * Liniar Hashing ----------------------------------------------------------
-
 
 RecordArray linearHashLinkedList(RecordLinkedList* list) {
     int tableSize = list->length;
@@ -288,12 +266,12 @@ RecordArray linearHashLinkedList(RecordLinkedList* list) {
         newTable.data[i].id = -1; // -1 ==> empty
     }
 
-        RecordNode* current = list->head;
-        do{
-            insertRecordLinear(&newTable, &current->data);
-            current = current->next;
-        }
-        while (current != NULL) ;
+    RecordNode* current = list->head;
+    do{
+        insertRecordLinear(&newTable, &current->data);
+        current = current->next;
+    }
+    while (current != NULL) ;
 
     return newTable;
 }
@@ -307,22 +285,48 @@ RecordArray doubleHashLinkedList(RecordLinkedList* list) {
         newTable.data[i].id = -1; // -1 ==> empty
     }
 
-        RecordNode* current = list->head;
-        do{
-            insertRecordDouble(&newTable, &current->data);
-            current = current->next;
-        }
-        while (current != NULL) ;
+    RecordNode* current = list->head;
+    do{
+        insertRecordDouble(&newTable, &current->data);
+        current = current->next;
+    }
+    while (current != NULL) ;
 
     return newTable;
 }
-
-
 // ? ========================================================================
 // ? CSV store data
 // ? ========================================================================
+// ! the main aim of this file is to read data from a csv , but the plan changed , after i get the new form of the data i will change the code
+// ! the new form of the data is : "Matricule: 12345678 Nom: JHONE Prénom: DOE Groupe: 1"
 
+// ? the old function ============================
+// void saveCSVLine(char* line,Record* record){
+//     char* token = strtok(line, ",");
+//     record->id = atoi(token);
 
+//     token = strtok(NULL, ",");
+//     record->firstName = strCreate(token);
+
+//     token = strtok(NULL, ",");
+//     record->lastName = strCreate(token);
+
+//     token = strtok(NULL, ",");
+//     record->group = atoi(token);
+// }
+//? =========================================
+void saveTxtLine(char* line,Record* record){
+        char* token = strtok(line, ":");
+        record->id = atoi(token);
+        token = strtok(NULL, ":");
+        record->firstName = strSub(strCreate(token),0 ,-8); // to remove the last 8 charachters ' Prénom: '
+
+        token = strtok(NULL, ":");
+        record->lastName = strSub(strCreate(token),0 , -7); // to remove the last 7 charachters ' Groupe: '
+
+        token = strtok(NULL, ",");
+        record->group = atoi(token);
+}
 //* I- Array ================================================================
 /*
 ? there is to ways to store the csv file in array:
@@ -343,27 +347,12 @@ void CSVToArrayRecords(FILE* file, RecordArray* array) {
 
     char line[MAX_LINE_SIZE];
     for (int i = 0; i < linesNum; i++) {
-        if (fgets(line, sizeof(line), file) == NULL) {
-            break;  
-        }
-
+        fgets(line, sizeof(line), file);
         Record* record = &array->data[i];
-
-        char* token = strtok(line, ",");
-        record->id = atoi(token);
-
-        token = strtok(NULL, ",");
-        record->firstName = strCreate(token);
-
-        token = strtok(NULL, ",");
-        record->lastName = strCreate(token);
-
-        token = strtok(NULL, ",");
-        record->group = atoi(token);
+        saveTxtLine(line+11,record); // line+11 to skip the first 11 charachters 'Matricule: '
     }
 
 }
-
 
 //* II- BinaryTree ================================================================
 void CSVToBinaryTree(FILE* file, RecordBinaryTree** root) {
@@ -371,50 +360,20 @@ void CSVToBinaryTree(FILE* file, RecordBinaryTree** root) {
     char line[MAX_LINE_SIZE];
    
     while( fgets ( line, sizeof line, file ) != NULL ){ 
-
         Record* record= (Record*)malloc(sizeof(Record));
-
-        char* token = strtok(line, ",");
-        record->id = atoi(token);
-
-        token = strtok(NULL, ",");
-        record->firstName = strCreate(token);
-
-        token = strtok(NULL, ",");
-        record->lastName = strCreate(token);
-
-        token = strtok(NULL, ",");
-        record->group = atoi(token);
-
+        saveTxtLine(line+11,record);
         *root = insertRecordBinaryTree(*root, record);
     }
-
 }
 
 // * III- Linked List ================================================================
-
 void CSVToLinkedList(FILE* file, RecordLinkedList* list) {
    
     char line[MAX_LINE_SIZE];
 
     while (fgets(line, sizeof line, file) != NULL) {
         Record* record = (Record*)malloc(sizeof(Record));
-
-        char* token = strtok(line, ",");
-        record->id = atoi(token);
-
-        token = strtok(NULL, ",");
-        record->firstName = strCreate(token);
-
-        token = strtok(NULL, ",");
-        record->lastName = strCreate(token);
-
-        token = strtok(NULL, ",");
-        record->group = atoi(token);
-
+        saveTxtLine(line+11,record);
         insertRecordLinkedList(list, record);
     }
 }
-
-
-

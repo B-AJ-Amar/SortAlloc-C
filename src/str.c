@@ -6,7 +6,6 @@ Copyright (c) 2023 Bouakaz Amar Abdeldjalil
 for the last version of this file visit :
     github repository : https://github.com/B-AJ-Amar/StrKit.git
 */
-
 #include "str.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -67,13 +66,173 @@ void strInsert(str* myStr, char* InStr, int index) {
 }
 
 
+// ? ====================================================================================
+
+str strSub(str s, int start, int end) {
+    if (start < 0) start = s.length + start; 
+    if (end < 0) end = s.length + end;      
+    //! rais out of index error
+    if (end > s.length || start > s.length) {
+        printf("Error: index out of range\n");
+        exit(EXIT_FAILURE);
+    }
+    if (start > end) return strCreate(NULL);
+    int new_len = end -start;
+
+    char* new_data = malloc(new_len + 1);
+    new_data[new_len] = '\0';
+    memcpy(new_data, s.data + start, new_len);
+    // printf("%s\n", new_data);
+
+    return strCreate(new_data);
+    
+}
+
+
+// ? ====================================================================================
+
+str strUpper(str s) {
+    str temp = s;
+    for (int i = 0; i < temp.length; i++) {
+        if (temp.data[i] >= 'a' && temp.data[i] <= 'z') {
+            temp.data[i] -= 32;
+        }
+    }
+    return temp;
+}
+
+str strLower(str s) {
+    str temp = s;
+    for (int i = 0; i < temp.length; i++) {
+        if (temp.data[i] >= 'A' && temp.data[i] <= 'Z') {
+            temp.data[i] += 32;
+        }
+    }
+    return temp;
+}
+
+str strReverse(str s) {
+    str temp = s;
+    if (!s.length) return temp;
+    if (s.length%2 == 0){
+        for (int i = 0; i < temp.length/2; i++) {
+            char c = temp.data[i];
+            temp.data[i] = temp.data[temp.length - i - 1];
+            temp.data[temp.length - i - 1] = c;
+        }
+    } 
+    else {
+        for (int i = 0; i < (temp.length - 1)/2; i++) {
+            char c = temp.data[i];
+            temp.data[i] = temp.data[temp.length - i - 1];
+            temp.data[temp.length - i - 1] = c;
+        }
+    }
+
+    return temp;
+}
+
+str strTrim(str s) {
+    str temp = s;
+    int i = 0;
+    while (temp.data[i] == ' ' || temp.data[i] == '\t' || temp.data[i] == '\n') {
+        i++;
+    }
+    int j = temp.length - 1;
+    while (temp.data[j] == ' ' || temp.data[j] == '\t' || temp.data[j] == '\n') {
+        j--;
+    }
+    temp.data = realloc(temp.data, j - i + 2);
+    memmove(temp.data, temp.data + i, j - i + 1);
+    temp.data[j - i + 1] = '\0';
+    temp.length = j - i + 1;
+    return temp;
+}
+
+// ? ====================================================================================
+
+int strIsDigit(str s){
+    for (int i = 0; i < s.length; i++) {
+        if (s.data[i] < '0' || s.data[i] > '9') {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int strIsNum(str s){
+    int dotCount = 0;
+    for (int i = 0; i < s.length; i++) {
+        if (s.data[i] == '.') {
+            dotCount++;
+        } else if (s.data[i] < '0' || s.data[i] > '9') {
+            return 0;
+        }
+    }
+    if (dotCount > 1) {
+        return 0;
+    }
+    return 1;
+}
+
+int strIsAlpha(str s){
+    for (int i = 0; i < s.length; i++) {
+        if ((s.data[i] < 'a' || s.data[i] > 'z') && (s.data[i] < 'A' || s.data[i] > 'Z')) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int strIsAlphaNum(str s){
+    for (int i = 0; i < s.length; i++) {
+        if ((s.data[i] < 'a' || s.data[i] > 'z') && (s.data[i] < 'A' || s.data[i] > 'Z') && (s.data[i] < '0' || s.data[i] > '9')) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int strIsSpace(str s){
+    for (int i = 0; i < s.length; i++) {
+        if (s.data[i] != ' ' && s.data[i] != '\t' && s.data[i] != '\n') {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int strIsUpper(str s){
+    for (int i = 0; i < s.length; i++) {
+        if (s.data[i] < 'A' || s.data[i] > 'Z') {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int strIsLower(str s){
+    for (int i = 0; i < s.length; i++) {
+        if (s.data[i] < 'a' || s.data[i] > 'z') {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
+int strIsPrintable(str s){
+    for (int i = 0; i < s.length; i++) {
+        if (s.data[i] < 32 || s.data[i] > 126) {
+            return 0;
+        }
+    }
+    return 1;
+}
+// ? ====================================================================================
 
 void strFree(str* s) {
     free(s->data);
-}
-
-void strPrint(str s) {
-    printf("%s", s.data);
 }
 
 // ? ====================================================================================
@@ -145,15 +304,5 @@ void strArrayFree(strArray* s) {
         strFree(&s->data[i]);
     }
     free(s->data);
-}
-
-void strArrayCopy(strArray* dest, strArray src) {
-    dest->length = src.length;
-    dest->data = (str*)malloc(sizeof(str) * src.length);
-    for (int i = 0; i < dest->length; i++) {
-        strSet(&dest->data[i], strGet(src.data[i]));
-    }
-    printf("strArrayCopy passed+++++++++++++++\n");
-    strArrayPrint(*dest);
 }
 
