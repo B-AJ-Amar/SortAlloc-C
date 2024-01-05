@@ -64,7 +64,7 @@ RecordBinaryTree* insertRecordBinaryTree(RecordBinaryTree* root, const Record* r
 
     if (record->id < root->data.id) {
         root->left = insertRecordBinaryTree(root->left, record);
-    } else if (record->id > root->data.id) {
+    } else {
         root->right = insertRecordBinaryTree(root->right, record);
     }
 
