@@ -37,31 +37,15 @@ typedef struct RecordBinaryTree {
     struct RecordBinaryTree* right;
 } RecordBinaryTree;
 
-
-
-
-
-
 // * Record --------------------------------------------------------------------
 
 int getLinesNum(FILE *fp);
-/*
-// Record RecordInit()
 
-// void SetRecord(Record *record, int id, str firstName, str lastName, int group);
-
-// Record getCSVLine(FILE *fp)
-
-// void PrintRecord(Record record);
-*/
 // * RecordArray --------------------------------------------------------------
 
 RecordArray* createRecordArray();
+
 void printRecordArray(RecordArray* array);
-// void PrintRecordArray(RecordArray arr)
-
-// void RecordArraySet(RecordArray* s, int index, Record record);
-
 
 // * RecordLinkedList ----------------------------------------------------------
 RecordNode* createRecordNode(const Record* record);

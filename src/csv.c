@@ -187,7 +187,6 @@ void freeLinkedList(RecordLinkedList* list) {
 // ? ========================================================================
 // ? hash table 
 // ? ========================================================================
-// FUNCTIONS FOR HASH TABLES 
 int hash(int key, int size) {
     return key % size;
 }
