@@ -12,7 +12,7 @@
 // ? Macros ========================================================================================
 #define MAX_PATH_LEN 256 // Max length of a path in windows is 256 characters
 #define MAX_LINE_SIZE 1024 // Max length of a line in a CSV file
-#define REPORT_FILE "report.csv"
+#define REPORT_FILE "log.csv"
 #define clearScreen system("cls") // Clear the screen in windows (clear in linux)
 
 #define COLOR_RED     "\x1b[31m"
@@ -85,7 +85,7 @@ int main() {
     int choice = 0;
     char path[MAX_PATH_LEN] ;
     char line[MAX_LINE_SIZE] ;
-    double time_taken[4]; // array to store the time taken by each algorithm
+    double time_taken[4] = {0,0,0,0}; // array to store the time taken by each algorithm
     /*
         time_taken[0] = loading time
         time_taken[1] = sorting time

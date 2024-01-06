@@ -386,11 +386,11 @@ void FileToLinkedList(FILE* file, RecordLinkedList* list) {
 // ? =======================================================================
 bool saveReport(char* file,char* fileName,double* time,int data){
     // file structure : fileName,emethod,loadingTime,sortingTime,IsHashed,HashingMethod,HashingTime
-    bool DS = (data && 0b11)?1:0;
-    bool isHashed = (data && 0b1000000)?1:0;
-    bool hashingMethod = (data && 0b100000000)?1:0;
-    bool sortingMethod = (data && 0b11100)>>2;
-    bool sortingDirection = (data && 0b100000)?1:0;
+    bool DS = data & 0b11;
+    bool isHashed = (data & 0b1000000)?1:0;
+    bool hashingMethod = (data & 0b100000000)?1:0;
+    short sortingMethod = (data & 0b11100)>>2;
+    bool sortingDirection = (data & 0b100000)?1:0;
     FILE* fp = fopen(file,"a+");
     if (fp==NULL) return false;
     fprintf(fp,"%s,%d,%f,%d,%s,%f,%s,%s,%f\n",
@@ -399,4 +399,3 @@ bool saveReport(char* file,char* fileName,double* time,int data){
 
     return true;
 }
-
