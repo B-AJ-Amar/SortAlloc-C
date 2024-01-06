@@ -100,7 +100,6 @@ int main() {
             system("cls");
             printf("Enter a path: ");
             scanf("%s", path);
-            printf("path: %s\n", path);
             fp = fopen(path, "r");
         } while (fp == NULL);
     // *Part 2 : get the number of the fields of the CSV file------------------------------------
@@ -119,8 +118,7 @@ int main() {
     if (choice == 0b0000010) goto sortDirection; // if he choose binary tree without hashing , we will not take a sort algorithm because it is already sorted
     IsHashed:
         choice += menu(path,6,3,"do you want to hash data (1=yes/0=no): ","no","yes");
-        // printf("tmp = %d\n",tmp);
-        // scanf("%d",&tmp);
+
         if ((choice & 0b10000000) ){
             choice = 0;
             goto allocMethod;
@@ -139,7 +137,7 @@ int main() {
     // if he choose binary tree without hashing , we will not take a sort algorithm because it is already sorted 0b1000010 = 66
     sortAlgorithm:
         if (choice != 0b0000010){
-            choice = menu(path,2,6,"choose the sort algorithm: ","Bubble Sort","selection Sort","insertion Sort","Quick Sort","Merge Sort"); // the 3rd to 5th bits
+            choice += menu(path,2,6,"choose the sort algorithm: ","Bubble Sort","selection Sort","insertion Sort","Quick Sort","Merge Sort"); // the 3rd to 5th bits
             if ((choice & 0b10000000)){
                 choice = choice & 0b00000011;
                 goto IsHashed;
@@ -243,6 +241,7 @@ int main() {
 
             printf("%s>Printing ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
+            
             printRecordArray(&hashedArray);
             time_taken[2] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
             printf("  >Done in %f seconds\n",time_taken[2]);
@@ -263,7 +262,7 @@ int main() {
     }
     if (saveReport(REPORT_FILE,path,time_taken,choice)) printf("%s>Report saved successfully%s\n",COLOR_GREEN,COLOR_RESET);
     else printf("%s>Report not saved%s\n",COLOR_RED,COLOR_RESET);
-    
+
     printf("\n>Do you want to choose another file (1=yes/0=no): ");
     scanf("%d",&choice);
     if (choice) goto chooseFile;    

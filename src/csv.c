@@ -37,6 +37,7 @@ void printRecordArray(RecordArray* array) {
     printf("|id       |first name                    |last name                     |group |\n");
     printf("+---------+------------------------------+-------------------------------------+\n");
     for (int i = 0; i < array->length; i++) {
+        if (array->data[i].id == -1) continue;
         printf("|%8d ", array->data[i].id);
         printf("|%s", array->data[i].firstName.data);
         for (int j = 0; j < 30 - array->data[i].firstName.length; j++)printf(" ");
@@ -158,6 +159,7 @@ void printLinkedList(const RecordLinkedList* list) {
     printf("+---------+------------------------------+-------------------------------------+\n");
 
     while (current != NULL) {
+        if (current->data.id == -1) continue;
         printf("|%8d ", current->data.id);
         printf("|%s", current->data.firstName.data);
         for (int j = 0; j < 30 - current->data.firstName.length; j++) printf(" ");
@@ -239,9 +241,10 @@ RecordArray linearHashArray(RecordArray* array) {
 }
 // * Double Hashing ----------------------------------------------------------
 RecordArray doubleHashArray(RecordArray* array) {
-    RecordArray newTable = {array->length, (Record*)malloc(array->length * sizeof(Record))};
+    int tableSize = array->length+10;
+    RecordArray newTable = {tableSize, (Record*)malloc(tableSize * sizeof(Record))};
 
-    for (int i = 0; i < array->length; i++) {
+    for (int i = 0; i <tableSize; i++) {
         newTable.data[i].id = -1;  // -1 ==> empty
     }
 
@@ -278,7 +281,7 @@ RecordArray linearHashLinkedList(RecordLinkedList* list) {
 // * Double Hash ------------------------------------------------------------
 
 RecordArray doubleHashLinkedList(RecordLinkedList* list) {
-    int tableSize = list->length;
+    int tableSize = list->length+10;
     RecordArray newTable = {tableSize, malloc(tableSize * sizeof(Record))};
 
     for (int i = 0; i < tableSize; i++) {
