@@ -7,7 +7,7 @@ This C language project focuses on analyzing and comparing various file allocati
 
 - Ensure you have a C compiler installed (e.g., GCC).
 ### Installation
-
+0. **note:** if you have the `makefile` you can skip to step 3
 1. Clone the repository:
 
     ```bash
