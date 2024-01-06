@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "str.h" 
 
 // ? =============================================================================
@@ -103,5 +104,8 @@ void FileToArrayRecords(FILE* file, RecordArray* array);
 void FileToBinaryTree(FILE* file, RecordBinaryTree** root); 
 
 void FileToLinkedList(FILE* file, RecordLinkedList* list);
+
+// ? =============================================================================
+bool saveReport(char* file,char* fileName,double* time,int data);
 
 #endif

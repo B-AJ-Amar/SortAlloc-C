@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MAX_LINE_SIZE 1024 // Max length of a line in a CSV file
 /*
@@ -376,3 +377,23 @@ void FileToLinkedList(FILE* file, RecordLinkedList* list) {
         insertRecordLinkedList(list, record);
     }
 }
+
+// ? =======================================================================
+// ? save the report to scv file
+// ? =======================================================================
+bool saveReport(char* file,char* fileName,double* time,int data){
+    // file structure : fileName,emethod,loadingTime,sortingTime,IsHashed,HashingMethod,HashingTime
+    bool DS = (data && 0b11)?1:0;
+    bool isHashed = (data && 0b1000000)?1:0;
+    bool hashingMethod = (data && 0b100000000)?1:0;
+    bool sortingMethod = (data && 0b11100)>>2;
+    bool sortingDirection = (data && 0b100000)?1:0;
+    FILE* fp = fopen(file,"a+");
+    if (fp==NULL) return false;
+    fprintf(fp,"%s,%d,%f,%d,%s,%f,%s,%s,%f\n",
+    fileName,DS,time[0],sortingMethod,(sortingDirection)?"Dec":"Inc", time[1], (isHashed)?"True":"False" ,(isHashed)?((hashingMethod)?"double":"liniare"):"None",time[3] );
+    fclose(fp);
+
+    return true;
+}
+

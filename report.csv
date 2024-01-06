@@ -1,0 +1,2 @@
+fileName,emethod,loadingTime,sortingAlgo,sortingDirection,sortingTime,IsHashed,HashingMethod,HashingTime
+Fichier_Test.txt,1,0.000000,0,Dec,0.000000,True,double,0.000000

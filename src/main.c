@@ -12,6 +12,7 @@
 // ? Macros ========================================================================================
 #define MAX_PATH_LEN 256 // Max length of a path in windows is 256 characters
 #define MAX_LINE_SIZE 1024 // Max length of a line in a CSV file
+#define REPORT_FILE "report.csv"
 #define clearScreen system("cls") // Clear the screen in windows (clear in linux)
 
 #define COLOR_RED     "\x1b[31m"
@@ -84,6 +85,13 @@ int main() {
     int choice = 0;
     char path[MAX_PATH_LEN] ;
     char line[MAX_LINE_SIZE] ;
+    double time_taken[4]; // array to store the time taken by each algorithm
+    /*
+        time_taken[0] = loading time
+        time_taken[1] = sorting time
+        time_taken[2] = printing time
+        time_taken[3] = hashing time
+    */
     clock_t start_time;
     // * Part 1 : get a path from the user ------------------------------------------------------
     chooseFile:
@@ -154,12 +162,15 @@ int main() {
         start_time = clock();
         RecordBinaryTree* root = NULL;
         FileToBinaryTree(fp, &root);
+        time_taken[0] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+        printf("  >Done in %f seconds\n",time_taken[0]);
         fclose(fp);
-        printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+
         // * Part 4.2 : printing the data 
         start_time = clock();
         printBinaryTree(root, (choice & 0b100000) >> 5);
-        printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+        time_taken[2] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+        printf("  >Done in %f seconds\n",time_taken[2]);
         // * Part 4.3 : free the memory 
         freeBinaryTree(root);
     }
@@ -169,35 +180,41 @@ int main() {
         start_time = clock();
         RecordLinkedList* list = createRecordLinkedList();
         FileToLinkedList(fp, list);
-        printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+        time_taken[0] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+        printf("  >Done in %f seconds\n",time_taken[0]);
         fclose(fp);
         // is hashed
         if (choice & 0b1000000){
-            printf("%s>Haching ...\n%s",COLOR_GREEN,COLOR_RESET);
+            printf("%s>Hashing ...\n%s",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             RecordArray array = HashTableLL(list, (choice & 0b100000000));
-            printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            time_taken[3] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+            printf("  >Done in %f seconds\n",time_taken[3]);
 
             printf("%s>Sorting ...\n%s",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             ArraySort(&array, (choice & 0b11100) >> 2, (choice & 0b100000) >> 5);
-            printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            time_taken[1] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+            printf("  >Done in %f seconds\n",time_taken[1]);
 
             printf("%s>Printing ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             printRecordArray(&array);
-            printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            time_taken[2] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+            printf("  >Done in %f seconds\n",time_taken[2]);
         }
         else{
             printf("%s>Sorting ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             LLSort(list, (choice & 0b11100) >> 2, (choice & 0b100000) >> 5);
-            printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            time_taken[1] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+            printf("  >Done in %f seconds\n",time_taken[1]);
 
             printf("%s>Printing ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             printLinkedList(list);
-            printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            time_taken[2] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+            printf("  >Done in %f seconds\n",time_taken[2]);
         }
         freeLinkedList(list);
     }
@@ -205,6 +222,7 @@ int main() {
         // * Part 4.1 : sorting the data using array 
         printf("%s>Loading File ...\n%s",COLOR_GREEN,COLOR_RESET);
         start_time = clock();
+        time_taken[0] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
         RecordArray *array = createRecordArray();
         FileToArrayRecords(fp, array);
         fclose(fp);
@@ -214,31 +232,38 @@ int main() {
             printf("%s>Haching ...\n%s",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             RecordArray hashedArray = HashTable(array,(choice & 0b100000000));
-            printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            time_taken[3] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+            printf("  >Done in %f seconds\n",time_taken[3]);
 
             printf("%s>Sorting ...%s",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
+            time_taken[1] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
             ArraySort(&hashedArray, (choice & 0b11100) >> 2, (choice & 0b100000) >> 5);
-            printf("\n  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            printf("\n  >Done in %f seconds\n",time_taken[1]);
 
             printf("%s>Printing ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             printRecordArray(&hashedArray);
-            printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            time_taken[2] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+            printf("  >Done in %f seconds\n",time_taken[2]);
         }
         else{
             printf("%s>Sorting ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
+            time_taken[1] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
             ArraySort(array, (choice & 0b11100) >> 2, (choice & 0b100000) >> 5);
-            printf("\n  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            printf("\n  >Done in %f seconds\n",time_taken[1]);
 
             printf("%s>Printing ...%s\n",COLOR_GREEN,COLOR_RESET);
             start_time = clock();
             printRecordArray(array);
-            printf("  >Done in %f seconds\n",(double)(clock() - start_time) / CLOCKS_PER_SEC);
+            time_taken[2] = (double)(clock() - start_time) / CLOCKS_PER_SEC;
+            printf("  >Done in %f seconds\n",time_taken[2]);
         }
     }
-
+    if (saveReport(REPORT_FILE,path,time_taken,choice)) printf("%s>Report saved successfully%s\n",COLOR_GREEN,COLOR_RESET);
+    else printf("%s>Report not saved%s\n",COLOR_RED,COLOR_RESET);
+    
     printf("\n>Do you want to choose another file (1=yes/0=no): ");
     scanf("%d",&choice);
     if (choice) goto chooseFile;    
